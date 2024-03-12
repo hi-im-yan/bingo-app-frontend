@@ -20,19 +20,18 @@ export default function ProfileForm() {
       }
 
     return (
-        <div className="flex items-center justify-center h-screen">
-          <form className="grid grid-cols-2 gap-2 content-center" onSubmit={onsubmit}>
-            <Input
-                type="text"
-                placeholder="Nome da Sala"
-            />
-            <Button
-              type="submit"
-              className="text-lg"
-            >
-              Criar
-            </Button>
-          </form>
-        </div>
+        <>
+          <div className="flex justify-between h-screen items-center">
+            <div className="flex flex-row m-auto p-4 shadow-lg border rounded bg-cyan-100">
+              <Input 
+                className="border-1 mr-4 hover:border-slate-700 shadow-sm focus:border-cyan-500"
+                placeholder="Nome da sala"
+              />
+              <Button className="bg-cyan-500">
+                Confirmar
+              </Button>
+            </div>
+          </div>
+        </>
       );
 }
