@@ -1,28 +1,31 @@
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import axios from "axios";
+
+type ResponseData = {
+  id: string;
+  title: string;
+};
 
 export default function ProfileForm() {
-  const [roomName, setRoomName] = useState('');
-  const router = useRouter()
+  const [roomName, setRoomName] = useState("");
+  const router = useRouter();
 
   async function createRoom() {
-    await fetch('https://dummyjson.com/products/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    axios
+      .post<ResponseData>("https://dummyjson.com/products/add", {
         title: roomName,
-        /* other product data */
       })
-    })
-      .then(res => res.json())
-      .then((data) => {
-        console.log(data);
-        router.push('/')
+      .then((response) => {
+        if (response.status !== 200) {
+          alert("Error creating room");
+        } else {
+          router.push("/game/admin");
+        }
       });
   }
 
@@ -34,7 +37,7 @@ export default function ProfileForm() {
             className="border-1 mr-4 hover:border-slate-700 shadow-sm focus:border-cyan-500"
             placeholder="Nome da sala"
             value={roomName}
-            onChange={e => setRoomName(e.target.value)}
+            onChange={(e) => setRoomName(e.target.value)}
           />
           <Button className="bg-cyan-500" onClick={createRoom}>
             Confirmar
