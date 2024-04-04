@@ -1,15 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export default function ProfileForm() {
-  const [selectedButton, setSelectedButton] = useState("");
+  const [selectedLetter, setSelectedLetter] = useState("");
+  const [selectedLetterNumber, setSelectedLetterNumber] = useState("");
+
 
   const handleButtonClick = (letter: string) => {
-    setSelectedButton(letter);
+    setSelectedLetter(letter);
   };
 
   const letterMappings: Record<string, number[]> = {
@@ -20,15 +20,19 @@ export default function ProfileForm() {
     O: [61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75],
   };
 
+  let drawnNumbers: number[] = [
+    1, 5, 48, 74
+  ];
+
   return (
     <>
-      <div className="border border-gray-300 shadow-lg p-4 lg:w-1/4 sm:w-max"> 
+      <div className="border border-gray-300 shadow-lg p-4 lg:w-1/4 sm:w-max">
         <div className="grid grid-cols-5">
           {["B", "I", "N", "G", "O"].map((letter) => (
             <Button
               key={letter}
               className={`bg-${
-                selectedButton.match(letter) ? "blue-700" : "blue-500"
+                selectedLetter.match(letter) ? "blue-700" : "blue-500"
               } hover:bg-blue-700 text-white font-bold py-2 px-4 rounded border border-gray-200 m-1`}
               onClick={() => handleButtonClick(letter)}
             >
@@ -38,10 +42,14 @@ export default function ProfileForm() {
         </div>
         <hr className="my-4" />
         <div className="grid grid-cols-5">
-          {letterMappings[selectedButton]?.map((number, index) => (
-            <div key={number}>
+          {letterMappings[selectedLetter]?.map((number, index) => (
+            <div key={index}>
               <Button
-                className="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded border border-gray-200 mb-1 hover:bg-gray-300"
+                onClick={() => setSelectedLetterNumber(selectedLetter + number)}
+                className={`bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded border border-gray-200 mb-1 hover:bg-gray-300 ${
+                  drawnNumbers.includes(number) ? "cursor-not-allowed opacity-50" : ""
+                }`}
+                disabled={drawnNumbers.includes(number)}
               >
                 {number.toFixed(0).padStart(2, "0")}
               </Button>
@@ -49,6 +57,7 @@ export default function ProfileForm() {
           ))}
         </div>
       </div>
+      <div>{selectedLetterNumber}</div>
     </>
   );
 }
