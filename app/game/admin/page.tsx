@@ -2,14 +2,38 @@
 
 import { Button } from "@/components/ui/button";
 import { FormEvent, useState } from "react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function ProfileForm() {
   const [selectedLetter, setSelectedLetter] = useState("");
   const [selectedNumber, setSelectedNumber] = useState(-1);
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
+  const handleConfirmButtonClick = () => {
+    setDialogOpen(true);
+  };
 
-  const handleButtonClick = (letter: string) => {
+  const handleModalClose = () => {
+    setDialogOpen(false);
+  };
+
+  const handleChosenLetter = (letter: string) => {
     setSelectedLetter(letter);
+    setSelectedNumber(-1);
+  };
+
+  const handleNumberSubmit = () => {
+    console.log("submitting number", selectedLetter + selectedNumber);
+    setDialogOpen(false);
   };
 
   const letterMappings: Record<string, number[]> = {
@@ -20,9 +44,7 @@ export default function ProfileForm() {
     O: [61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75],
   };
 
-  let drawnNumbers: number[] = [
-    1, 5, 48, 74
-  ];
+  let drawnNumbers: number[] = [1, 5, 48, 74];
 
   return (
     <>
@@ -34,7 +56,7 @@ export default function ProfileForm() {
               className={`bg-${
                 selectedLetter.match(letter) ? "blue-700" : "blue-500"
               } hover:bg-blue-700 text-white font-bold py-2 px-4 rounded border border-gray-200 m-1`}
-              onClick={() => handleButtonClick(letter)}
+              onClick={() => handleChosenLetter(letter)}
             >
               {letter}
             </Button>
@@ -47,8 +69,14 @@ export default function ProfileForm() {
               <Button
                 onClick={() => setSelectedNumber(number)}
                 className={`bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded border border-gray-200 mb-1 hover:bg-gray-300 ${
-                  drawnNumbers.includes(number) ? "cursor-not-allowed opacity-50" : ""
-                } ${selectedNumber === number ? "bg-gray-700 text-gray-200 hover:bg-gray-700" : ""}`}
+                  drawnNumbers.includes(number)
+                    ? "cursor-not-allowed opacity-50"
+                    : ""
+                } ${
+                  selectedNumber === number
+                    ? "bg-gray-700 text-gray-200 hover:bg-gray-700"
+                    : ""
+                }`}
                 disabled={drawnNumbers.includes(number)}
               >
                 {number.toFixed(0).padStart(2, "0")}
@@ -57,7 +85,45 @@ export default function ProfileForm() {
           ))}
         </div>
       </div>
-      <div>{selectedLetter+selectedNumber}</div>
+
+      <Dialog>
+        {selectedNumber === -1 ? (
+          <Button
+            onClick={() => setDialogOpen(true)}
+            className={`bg-green-500 hover:bg-green-700 text-white font-bold mt-5 cursor-not-allowed opacity-50 w-full`}
+          >
+            Selecione uma letra e um número
+          </Button>
+        ) : (
+          <DialogTrigger asChild>
+            <Button
+              onClick={() => setDialogOpen(true)}
+              className={`bg-green-500 hover:bg-green-700 text-white font-bold mt-5 w-full`}
+            >
+              Confirmar: {selectedLetter + selectedNumber}
+            </Button>
+          </DialogTrigger>
+        )}
+
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>
+              Confirmar número {selectedLetter + selectedNumber}
+            </DialogTitle>
+            <DialogDescription>
+              Ao confirmar, todos os jogadores serão notificados.
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button">
+              Confirmar
+            </Button>
+          </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
