@@ -5,7 +5,7 @@ import { FormEvent, useState } from "react";
 
 export default function ProfileForm() {
   const [selectedLetter, setSelectedLetter] = useState("");
-  const [selectedLetterNumber, setSelectedLetterNumber] = useState("");
+  const [selectedNumber, setSelectedNumber] = useState(-1);
 
 
   const handleButtonClick = (letter: string) => {
@@ -45,10 +45,10 @@ export default function ProfileForm() {
           {letterMappings[selectedLetter]?.map((number, index) => (
             <div key={index}>
               <Button
-                onClick={() => setSelectedLetterNumber(selectedLetter + number)}
+                onClick={() => setSelectedNumber(number)}
                 className={`bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded border border-gray-200 mb-1 hover:bg-gray-300 ${
                   drawnNumbers.includes(number) ? "cursor-not-allowed opacity-50" : ""
-                }`}
+                } ${selectedNumber === number ? "bg-gray-700 text-gray-200 hover:bg-gray-700" : ""}`}
                 disabled={drawnNumbers.includes(number)}
               >
                 {number.toFixed(0).padStart(2, "0")}
@@ -57,7 +57,7 @@ export default function ProfileForm() {
           ))}
         </div>
       </div>
-      <div>{selectedLetterNumber}</div>
+      <div>{selectedLetter+selectedNumber}</div>
     </>
   );
 }

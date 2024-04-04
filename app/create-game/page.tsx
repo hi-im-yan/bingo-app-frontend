@@ -3,13 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-type ResponseData = {
-  id: string;
-  title: string;
-};
 
 export default function ProfileForm() {
   const [roomName, setRoomName] = useState("");
@@ -17,13 +13,16 @@ export default function ProfileForm() {
 
   async function createRoom() {
     axios
-      .post<ResponseData>("https://dummyjson.com/products/add", {
-        title: roomName,
+      .post<ResponseData>(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/room`, {
+        name: roomName,
+        description: 'DEFAULT DESCRIPTION',
+        password: 'DEFAULT PASSWORD'
       })
       .then((response) => {
         if (response.status !== 200) {
-          alert("Error creating room");
+          alert(response);
         } else {
+          localStorage.setItem("roomSettings", JSON.stringify(response.data));
           router.push("/game/admin");
         }
       });
