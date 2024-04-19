@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -12,11 +12,84 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Client, Message } from "@stomp/stompjs";
 
 export default function ProfileForm() {
   const [selectedLetter, setSelectedLetter] = useState("");
   const [selectedNumber, setSelectedNumber] = useState(-1);
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [stompClient, setStompClient] = useState<Client>();
+  const [gameData, setGameData] = useState<ResponseData>();
+  const [drawnNumbers, setDrawnNumbers] = useState<number[]>([]);
+
+  const localStorageData = localStorage.getItem("roomSettings");
+
+  // Parse the JSON string into a TypeScript object of type MyObject
+  const roomSettings: ResponseData | null = localStorageData
+    ? JSON.parse(localStorageData)
+    : null;
+
+  // Function to initialize the Stomp client and establish the connection
+  const initializeStompClient = () => {
+    const client = new Client({
+      brokerURL: `${process.env.NEXT_PUBLIC_WS_URL}/bingo-connect`, // Change to your Spring Boot WebSocket URL
+      debug: (str) => {
+        console.log(str);
+      },
+    });
+
+    client.onConnect = (frame) => {
+      console.info('StompJS connected:', frame);
+      subscribeToDestination(client)
+      setStompClient(client); // Store the Stomp client instance in state
+    };
+
+    client.onStompError = (frame) => {
+      console.error('StompJS error:', frame);
+    };
+
+    client.onWebSocketClose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    client.activate();
+  };
+
+  const publishNumber = () => {
+    if (stompClient) {
+      stompClient.publish({
+        destination: `/app/add-number`,
+        body: JSON.stringify({
+          "session-code":  `${roomSettings?.sessionCode}`,
+          "creator-hash": `${roomSettings?.creatorHash}`,
+          "number": selectedNumber,
+      }),
+      });
+    } else {
+      console.error('Stomp client is not initialized');
+    }
+  };
+
+  const subscribeToDestination = (client: Client) => {
+    client.subscribe(`/room/${roomSettings?.sessionCode}`, (message: Message) => {
+      const responseData: ResponseData = JSON.parse(message.body);
+      setGameData(responseData);
+    });
+  };
+
+  // Initialize the Stomp client when the component mounts
+  useEffect(() => {
+    initializeStompClient();
+  }, []);
+
+  useEffect(() => { 
+    if (gameData) {
+      const drawnNumbersAsList = gameData.drawnNumbers.split(",").map(Number);
+      setDrawnNumbers(drawnNumbersAsList);
+    }
+  }, [gameData]);
+
+
 
   const handleConfirmButtonClick = () => {
     setDialogOpen(true);
@@ -43,8 +116,6 @@ export default function ProfileForm() {
     G: [46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60],
     O: [61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75],
   };
-
-  let drawnNumbers: number[] = [1, 5, 48, 74];
 
   return (
     <>
@@ -116,11 +187,11 @@ export default function ProfileForm() {
           </DialogHeader>
 
           <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button">
-              Confirmar
-            </Button>
-          </DialogClose>
+            <DialogClose asChild>
+              <Button type="button" onClick={() => publishNumber()}>
+                Confirmar
+              </Button>
+            </DialogClose>
           </DialogFooter>
         </DialogContent>
       </Dialog>
