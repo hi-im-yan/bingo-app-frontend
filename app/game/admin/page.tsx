@@ -117,6 +117,14 @@ export default function ProfileForm() {
     O: [61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75],
   };
 
+  const searchForLetterOfNumber = (number: number) => {
+    for (const letter in letterMappings) {
+      if (letterMappings[letter].includes(number)) {
+        return letter;
+      }
+    }
+  };
+
   return (
     <>
       <div className="border border-gray-300 shadow-lg p-4 lg:w-1/4 sm:w-max">
@@ -195,6 +203,19 @@ export default function ProfileForm() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+        <div className="border border-gray-300 shadow-lg p-4 mt-4 bg-slate-100">
+          <h2 className="text-lg font-bold mb-2 flex justify-center">Último número</h2>
+          <div className="flex justify-center">
+            {drawnNumbers.slice(-1).map((number, index) => (
+              <div key={index} className="bg-blue-700 text-slate-100 font-bold py-2 px-4 rounded border border-gray-200 mr-2">
+                
+                {searchForLetterOfNumber(number)} - {number.toFixed(0).padStart(2, "0")}
+              </div>
+            ))}
+          </div>
+        </div>
+
     </>
   );
 }
