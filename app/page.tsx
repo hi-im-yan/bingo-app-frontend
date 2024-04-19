@@ -9,7 +9,7 @@ export default function Home() {
           <Link href="/create-game">Criar Sala</Link>
         </Button>
         <Button className="text-lg">
-          <Link href="/connect-game">Entrar na sala</Link>
+          <Link href="/enter-game">Entrar na sala</Link>
         </Button>
       </div>
   </div>
