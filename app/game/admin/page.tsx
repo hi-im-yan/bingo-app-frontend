@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Client, Message } from "@stomp/stompjs";
+import { set } from "react-hook-form";
 
 export default function ProfileForm() {
   const [selectedLetter, setSelectedLetter] = useState("");
@@ -39,17 +40,17 @@ export default function ProfileForm() {
     });
 
     client.onConnect = (frame) => {
-      console.info('StompJS connected:', frame);
-      subscribeToDestination(client)
+      console.info("StompJS connected:", frame);
+      subscribeToDestination(client);
       setStompClient(client); // Store the Stomp client instance in state
     };
 
     client.onStompError = (frame) => {
-      console.error('StompJS error:', frame);
+      console.error("StompJS error:", frame);
     };
 
     client.onWebSocketClose = () => {
-      console.log('WebSocket connection closed');
+      console.log("WebSocket connection closed");
     };
 
     client.activate();
@@ -60,21 +61,24 @@ export default function ProfileForm() {
       stompClient.publish({
         destination: `/app/add-number`,
         body: JSON.stringify({
-          "session-code":  `${roomSettings?.sessionCode}`,
+          "session-code": `${roomSettings?.sessionCode}`,
           "creator-hash": `${roomSettings?.creatorHash}`,
-          "number": selectedNumber,
-      }),
+          number: selectedNumber,
+        }),
       });
     } else {
-      console.error('Stomp client is not initialized');
+      console.error("Stomp client is not initialized");
     }
   };
 
   const subscribeToDestination = (client: Client) => {
-    client.subscribe(`/room/${roomSettings?.sessionCode}`, (message: Message) => {
-      const responseData: ResponseData = JSON.parse(message.body);
-      setGameData(responseData);
-    });
+    client.subscribe(
+      `/room/${roomSettings?.sessionCode}`,
+      (message: Message) => {
+        const responseData: ResponseData = JSON.parse(message.body);
+        setGameData(responseData);
+      }
+    );
   };
 
   // Initialize the Stomp client when the component mounts
@@ -82,14 +86,12 @@ export default function ProfileForm() {
     initializeStompClient();
   }, []);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (gameData) {
       const drawnNumbersAsList = gameData.drawnNumbers.split(",").map(Number);
       setDrawnNumbers(drawnNumbersAsList);
     }
   }, [gameData]);
-
-
 
   const handleConfirmButtonClick = () => {
     setDialogOpen(true);
@@ -124,6 +126,22 @@ export default function ProfileForm() {
       }
     }
   };
+
+  const drawnNumbersForLetterBInCrescentOrder = drawnNumbers
+    .filter((number) => number <= 15)
+    .sort((a, b) => a - b);
+  const drawnNumbersForLetterIInCrescentOrder = drawnNumbers
+    .filter((number) => number > 15 && number <= 30)
+    .sort((a, b) => a - b);
+  const drawnNumbersForLetterNInCrescentOrder = drawnNumbers
+    .filter((number) => number > 30 && number <= 45)
+    .sort((a, b) => a - b);
+  const drawnNumbersForLetterGInCrescentOrder = drawnNumbers
+    .filter((number) => number > 45 && number <= 60)
+    .sort((a, b) => a - b);
+  const drawnNumbersForLetterOInCrescentOrder = drawnNumbers
+    .filter((number) => number > 60)
+    .sort((a, b) => a - b);
 
   return (
     <>
@@ -204,17 +222,51 @@ export default function ProfileForm() {
         </DialogContent>
       </Dialog>
 
+      <div className="border border-gray-300 shadow-lg p-4 mt-4 bg-slate-100">
+        <h2 className="text-lg font-bold mb-2 flex justify-center">
+          Último número
+        </h2>
+        <div className="flex justify-center">
+          {drawnNumbers.slice(-1).map((number, index) => (
+            <div
+              key={index}
+              className="bg-blue-700 text-slate-100 font-bold py-2 px-4 rounded border border-gray-200 mr-2"
+            >
+              {searchForLetterOfNumber(number)} -{" "}
+              {number.toFixed(0).padStart(2, "0")}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {drawnNumbers.length ? (
         <div className="border border-gray-300 shadow-lg p-4 mt-4 bg-slate-100">
-          <h2 className="text-lg font-bold mb-2 flex justify-center">Último número</h2>
-          <div className="flex justify-center">
-            {drawnNumbers.slice(-1).map((number, index) => (
-              <div key={index} className="bg-blue-700 text-slate-100 font-bold py-2 px-4 rounded border border-gray-200 mr-2">
-                
-                {searchForLetterOfNumber(number)} - {number.toFixed(0).padStart(2, "0")}
-              </div>
-            ))}
+          <h2 className="text-lg font-bold mb-2 flex justify-center">
+            Números sorteados
+          </h2>
+          <div className="">
+            <label className="flex bg-blue-700 rounded-md px-5 py-2 text-slate-100 font-bold">
+              B - {drawnNumbersForLetterBInCrescentOrder.join(", ")}
+            </label>
+            <br />
+            <label className="flex bg-blue-700 rounded-md px-5 py-2 text-slate-100 font-bold">
+              I - {drawnNumbersForLetterIInCrescentOrder.join(", ")}
+            </label>
+            <br />
+            <label className="flex bg-blue-700 rounded-md px-5 py-2 text-slate-100 font-bold">
+              N - {drawnNumbersForLetterNInCrescentOrder.join(", ")}
+            </label>
+            <br />
+            <label className="flex bg-blue-700 rounded-md px-5 py-2 text-slate-100 font-bold">
+              G - {drawnNumbersForLetterGInCrescentOrder.join(", ")}
+            </label>
+            <br />
+            <label className="flex bg-blue-700 rounded-md px-5 py-2 text-slate-100 font-bold">
+              O - {drawnNumbersForLetterOInCrescentOrder.join(", ")}
+            </label>
           </div>
         </div>
+      ) : null}
 
     </>
   );
