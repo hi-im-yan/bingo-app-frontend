@@ -93,7 +93,7 @@ export default function ProfileForm() {
 
     initializeStompClient();
     setInviteUrl(
-      `${window.location.protocol}//${window.location.host}${uris[0]}/${uris[1]}/room/${roomSettings?.sessionCode}`
+      `${window.location.protocol}//${window.location.host}${uris[0]}/${uris[1]}/room/${roomSettingsFromLocalStorage?.sessionCode}`
     );
   }, []);
 
