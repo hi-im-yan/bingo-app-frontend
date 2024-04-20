@@ -25,15 +25,10 @@ export default function ProfileForm() {
   const [drawnNumbers, setDrawnNumbers] = useState<number[]>([]);
   const [inviteUrl, setInviteUrl] = useState("");
   const [copied, setCopied] = useState(false);
+  const [roomSettings, setRoomSettings] = useState<ResponseData | undefined>(); 
 
   const pathName = usePathname();
   const uris = pathName.split("/");
-
-  const localStorageData = localStorage.getItem("roomSettings");
-  // Parse the JSON string into a TypeScript object of type MyObject
-  const roomSettings: ResponseData | null = localStorageData
-    ? JSON.parse(localStorageData)
-    : null;
 
   // Function to initialize the Stomp client and establish the connection
   const initializeStompClient = () => {
@@ -88,6 +83,14 @@ export default function ProfileForm() {
 
   // Initialize the Stomp client when the component mounts
   useEffect(() => {
+    const localStorageData = localStorage.getItem("roomSettings");
+    // Parse the JSON string into a TypeScript object of type MyObject
+    const roomSettingsFromLocalStorage: ResponseData | undefined = localStorageData
+      ? JSON.parse(localStorageData)
+      : undefined;
+
+    setRoomSettings(roomSettingsFromLocalStorage);
+
     initializeStompClient();
     setInviteUrl(
       `${window.location.protocol}//${window.location.host}${uris[0]}/${uris[1]}/room/${roomSettings?.sessionCode}`
