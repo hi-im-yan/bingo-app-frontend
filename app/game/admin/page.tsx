@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Client, Message } from "@stomp/stompjs";
 import { set } from "react-hook-form";
+import { usePathname } from "next/navigation";
 
 export default function ProfileForm() {
   const [selectedLetter, setSelectedLetter] = useState("");
@@ -22,9 +23,13 @@ export default function ProfileForm() {
   const [stompClient, setStompClient] = useState<Client>();
   const [gameData, setGameData] = useState<ResponseData>();
   const [drawnNumbers, setDrawnNumbers] = useState<number[]>([]);
+  const [inviteUrl, setInviteUrl] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const pathName = usePathname();
+  const uris = pathName.split("/");
 
   const localStorageData = localStorage.getItem("roomSettings");
-
   // Parse the JSON string into a TypeScript object of type MyObject
   const roomSettings: ResponseData | null = localStorageData
     ? JSON.parse(localStorageData)
@@ -84,6 +89,9 @@ export default function ProfileForm() {
   // Initialize the Stomp client when the component mounts
   useEffect(() => {
     initializeStompClient();
+    setInviteUrl(
+      `${window.location.protocol}//${window.location.host}${uris[0]}/${uris[1]}/room/${roomSettings?.sessionCode}`
+    );
   }, []);
 
   useEffect(() => {
@@ -142,6 +150,28 @@ export default function ProfileForm() {
   const drawnNumbersForLetterOInCrescentOrder = drawnNumbers
     .filter((number) => number > 60)
     .sort((a, b) => a - b);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopied(true);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      // Fallback for browsers that do not support navigator.clipboard
+      try {
+        const input = document.createElement("textarea");
+        input.value = inviteUrl;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        setCopied(true);
+      } catch (err) {
+        console.error("Fallback copy failed:", err);
+        setCopied(false);
+      }
+    }
+  };
 
   return (
     <>
@@ -222,7 +252,13 @@ export default function ProfileForm() {
         </DialogContent>
       </Dialog>
 
-      <div className="border border-gray-300 shadow-lg p-4 mt-4 bg-slate-100">
+      <Button className="flex mx-auto mt-2" onClick={copyToClipboard}>
+        {copied
+          ? "Copiado!"
+          : `Clique para copiar o link de convite: ${roomSettings?.sessionCode}`}
+      </Button>
+
+      <div className="border border-gray-300 shadow-lg p-4 mt-2 bg-slate-100">
         <h2 className="text-lg font-bold mb-2 flex justify-center">
           Último número
         </h2>
@@ -267,7 +303,6 @@ export default function ProfileForm() {
           </div>
         </div>
       ) : null}
-
     </>
   );
 }
