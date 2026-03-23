@@ -1,0 +1,45 @@
+{
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "Edit|Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash .claude/hooks/no-xss.sh"
+					},
+					{
+						"type": "command",
+						"command": "bash .claude/hooks/detect-hardcoded-keys.sh"
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Edit|Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash .claude/hooks/lint-fix.sh"
+					},
+					{
+						"type": "command",
+						"command": "bash .claude/hooks/run-tests.sh"
+					}
+				]
+			}
+		],
+		"Stop": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "bash .claude/hooks/coverage-check.sh"
+					}
+				]
+			}
+		]
+	}
+}
