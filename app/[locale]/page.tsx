@@ -2,7 +2,6 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageContainer } from "@/components/page-container";
 import { PageHeader, PageTitle, PageDescription } from "@/components/page-header";
-import { buttonVariants } from "@/components/ui/button";
 import { JoinRoomForm } from "./join-room-form";
 
 export default function Home() {
@@ -18,7 +17,7 @@ export default function Home() {
 			<div className="flex flex-col gap-4">
 				<Link
 					href="/create"
-					className={buttonVariants({ size: "lg", className: "h-14 text-lg font-semibold" })}
+					className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-6 text-lg font-semibold text-primary-foreground transition-colors hover:bg-primary/80"
 				>
 					{t("createRoom")}
 				</Link>
