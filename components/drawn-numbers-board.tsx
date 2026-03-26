@@ -26,10 +26,10 @@ export function DrawnNumbersBoard({ drawnNumbers }: DrawnNumbersBoardProps) {
 				{drawnNumbers.length === 0 ? (
 					<p className="py-4 text-center text-muted-foreground">{t("noNumbers")}</p>
 				) : (
-					<div className="grid grid-cols-5 gap-1">
+					<div role="grid" aria-label={t("drawnNumbers")} className="grid grid-cols-5 gap-1">
 						{BINGO_LETTERS.map((letter) => (
-							<div key={letter} className="flex flex-col items-center gap-1">
-								<span className="text-sm font-bold text-primary">{letter}</span>
+							<div key={letter} role="rowgroup" className="flex flex-col items-center gap-1">
+								<span role="columnheader" className="text-sm font-bold text-primary">{letter}</span>
 								<div className="flex flex-col gap-1">
 									{getNumbersForLetter(letter).map((num) => (
 										<BingoBall

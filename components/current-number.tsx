@@ -13,16 +13,16 @@ export function CurrentNumber({ number }: CurrentNumberProps) {
 
 	if (number === null) {
 		return (
-			<div className="flex flex-col items-center gap-2 py-6">
+			<div role="status" aria-live="polite" className="flex flex-col items-center gap-2 py-6">
 				<p className="text-lg text-muted-foreground">{t("waitingForDraw")}</p>
 			</div>
 		);
 	}
 
 	return (
-		<div className="flex flex-col items-center gap-2 py-4">
+		<div role="status" aria-live="polite" className="flex flex-col items-center gap-2 py-4">
 			<p className="text-sm font-medium text-muted-foreground">{t("lastDrawn")}</p>
-			<BingoBall number={number} drawn size="lg" />
+			<BingoBall number={number} drawn size="lg" aria-hidden="true" />
 			<p className="text-base font-semibold">{formatBingoLabel(number)}</p>
 		</div>
 	);

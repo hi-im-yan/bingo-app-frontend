@@ -31,7 +31,7 @@ export function ShareRoomSection({ sessionCode }: ShareRoomSectionProps) {
 					{/* eslint-disable-next-line @next/next/no-img-element */}
 					<img
 						src={api.getQrCodeUrl(sessionCode)}
-						alt="QR Code"
+						alt={`${t("qrCode")} — ${sessionCode}`}
 						width={200}
 						height={200}
 						className="rounded-lg"

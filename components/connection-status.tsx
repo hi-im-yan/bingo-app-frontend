@@ -14,6 +14,7 @@ export function ConnectionStatus({ connected, reconnecting }: ConnectionStatusPr
 
 	return (
 		<div
+			role="alert"
 			className={`rounded-lg bg-warning/10 px-4 py-3 text-center text-sm font-medium text-warning-foreground ${
 				reconnecting ? "animate-pulse" : ""
 			}`}

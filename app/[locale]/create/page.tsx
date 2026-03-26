@@ -116,8 +116,8 @@ export default function CreateRoomPage() {
 							/>
 
 							<div className="flex flex-col gap-2">
-								<Label className="text-base">{t("drawModeLabel")}</Label>
-								<div className="grid grid-cols-2 gap-3">
+								<Label className="text-base" id="draw-mode-label">{t("drawModeLabel")}</Label>
+								<div role="radiogroup" aria-labelledby="draw-mode-label" className="grid grid-cols-2 gap-3">
 									<DrawModeOption
 										selected={drawMode === "MANUAL"}
 										onClick={() => form.setValue("drawMode", "MANUAL")}
@@ -167,6 +167,8 @@ function DrawModeOption({
 	return (
 		<button
 			type="button"
+			role="radio"
+			aria-checked={selected}
 			onClick={onClick}
 			className={`flex flex-col items-center gap-1 rounded-xl border-2 p-4 text-center transition-colors ${
 				selected

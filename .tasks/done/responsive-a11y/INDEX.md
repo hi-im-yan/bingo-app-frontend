@@ -1,6 +1,6 @@
 # F4.2 — Responsive & Accessibility
 
-**Status:** ready
+**Status:** done
 **Blocked by:** — (F4.1 recommended first but not hard blocker)
 **Branch:** feature/responsive-a11y
 
@@ -11,9 +11,9 @@ Mobile-first responsive design audit. Keyboard navigation for number grid. ARIA 
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 001 | Responsive audit across all pages | ready | — | Component Builder |
-| 002 | Keyboard navigation for NumberGrid | ready | — | Logic Writer |
-| 003 | ARIA labels + screen reader support | ready | — | Component Builder |
+| 001 | Responsive audit across all pages | done | — | Component Builder |
+| 002 | Keyboard navigation for NumberGrid | done | — | Logic Writer |
+| 003 | ARIA labels + screen reader support | done | — | Component Builder |
 
 ## Decisions
 - Mobile-first: bingo is commonly played on phones
