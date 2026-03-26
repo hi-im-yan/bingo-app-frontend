@@ -4,7 +4,13 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import { Client, type IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? "http://localhost:8080/bingo-connect";
+function toSockJsUrl(url: string): string {
+	return url.replace(/^wss:/, "https:").replace(/^ws:/, "http:");
+}
+
+const WS_URL = toSockJsUrl(
+	process.env.NEXT_PUBLIC_WS_URL ?? "http://localhost:8080/bingo-connect",
+);
 
 interface UseStompClientOptions {
 	onConnect?: () => void;
