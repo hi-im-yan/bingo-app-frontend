@@ -9,11 +9,19 @@ vi.mock("next/navigation", () => ({
 	useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
 }));
 
+vi.mock("@/i18n/navigation", () => ({
+	useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+}));
+
 const mockGetRoom = vi.fn();
 const mockGetCreatorHash = vi.fn();
 
 vi.mock("@/lib/api", () => ({
-	api: { getRoom: (...args: unknown[]) => mockGetRoom(...args) },
+	api: {
+		getRoom: (...args: unknown[]) => mockGetRoom(...args),
+		getQrCodeUrl: (code: string) => `http://localhost:8080/api/v1/room/${code}/qrcode`,
+		deleteRoom: vi.fn().mockResolvedValue(undefined),
+	},
 	BingoApiError: class extends Error {
 		status: number;
 		constructor(status: number, message: string) {

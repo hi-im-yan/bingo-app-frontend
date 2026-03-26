@@ -13,6 +13,8 @@ import { DrawnNumbersBoard } from "@/components/drawn-numbers-board";
 import { ConnectionStatus } from "@/components/connection-status";
 import { ManualDrawPanel } from "@/components/manual-draw-panel";
 import { AutomaticDrawPanel } from "@/components/automatic-draw-panel";
+import { ShareRoomSection } from "@/components/share-room-section";
+import { DeleteRoomButton } from "@/components/delete-room-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TOTAL_NUMBERS } from "@/lib/constants";
 
@@ -127,7 +129,11 @@ export default function AdminPage() {
 					/>
 				)}
 
+				<ShareRoomSection sessionCode={displayRoom.sessionCode} />
+
 				<DrawnNumbersBoard drawnNumbers={displayRoom.drawnNumbers} />
+
+				<DeleteRoomButton sessionCode={displayRoom.sessionCode} />
 			</div>
 		</PageContainer>
 	);
