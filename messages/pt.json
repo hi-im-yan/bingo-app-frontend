@@ -1,0 +1,79 @@
+{
+	"common": {
+		"appName": "Bingo",
+		"loading": "Carregando...",
+		"error": "Algo deu errado",
+		"retry": "Tentar novamente",
+		"back": "Voltar",
+		"close": "Fechar",
+		"confirm": "Confirmar",
+		"cancel": "Cancelar",
+		"copy": "Copiar",
+		"copied": "Copiado!",
+		"share": "Compartilhar"
+	},
+	"home": {
+		"title": "Bingo",
+		"subtitle": "Crie ou entre em uma sala para jogar",
+		"createRoom": "Criar Sala",
+		"joinRoom": "Entrar em Sala",
+		"joinPlaceholder": "Código da sala",
+		"joinButton": "Entrar"
+	},
+	"createRoom": {
+		"title": "Criar Sala",
+		"nameLabel": "Nome da sala",
+		"namePlaceholder": "Ex: Bingo da Sexta",
+		"descriptionLabel": "Descrição (opcional)",
+		"descriptionPlaceholder": "Ex: Bingo beneficente da comunidade",
+		"drawModeLabel": "Modo de sorteio",
+		"manual": "Manual",
+		"manualDescription": "Você escolhe os números",
+		"automatic": "Automático",
+		"automaticDescription": "O sistema sorteia aleatoriamente",
+		"createButton": "Criar Sala",
+		"creating": "Criando...",
+		"nameRequired": "Nome da sala é obrigatório",
+		"nameTooLong": "Nome deve ter no máximo 255 caracteres",
+		"nameConflict": "Já existe uma sala com esse nome"
+	},
+	"joinRoom": {
+		"title": "Entrar na Sala",
+		"codePlaceholder": "Código da sala (6 caracteres)",
+		"joinButton": "Entrar",
+		"joining": "Entrando...",
+		"codeRequired": "Código da sala é obrigatório",
+		"roomNotFound": "Sala não encontrada"
+	},
+	"room": {
+		"drawnNumbers": "Números sorteados",
+		"drawnCount": "{count} de {total} sorteados",
+		"noNumbers": "Nenhum número sorteado ainda",
+		"lastDrawn": "Último sorteado",
+		"waitingForDraw": "Aguardando sorteio..."
+	},
+	"admin": {
+		"title": "Painel do Criador",
+		"drawNumber": "Sortear Número",
+		"drawing": "Sorteando...",
+		"allDrawn": "Todos os números foram sorteados!",
+		"selectNumber": "Selecione um número",
+		"deleteRoom": "Encerrar Sala",
+		"deleteConfirm": "Tem certeza que deseja encerrar esta sala?",
+		"deleteWarning": "Esta ação não pode ser desfeita.",
+		"shareRoom": "Compartilhar Sala",
+		"sessionCode": "Código da sala",
+		"qrCode": "QR Code",
+		"roomMode": "Modo: {mode}",
+		"manual": "Manual",
+		"automatic": "Automático"
+	},
+	"errors": {
+		"connectionLost": "Conexão perdida. Reconectando...",
+		"roomNotFound": "Sala não encontrada",
+		"invalidCode": "Código de sala inválido",
+		"drawFailed": "Erro ao sortear número",
+		"deleteFailed": "Erro ao encerrar sala",
+		"generic": "Algo deu errado. Tente novamente."
+	}
+}

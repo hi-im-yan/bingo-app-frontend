@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Outfit, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { NextIntlClientProvider } from "next-intl";
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
+import { routing } from "@/i18n/routing";
+import "../globals.css";
 
 const outfit = Outfit({
 	variable: "--font-outfit",
@@ -23,17 +27,27 @@ export const viewport: Viewport = {
 	maximumScale: 1,
 };
 
-export default function RootLayout({
+export default async function LocaleLayout({
 	children,
+	params,
 }: Readonly<{
 	children: React.ReactNode;
+	params: Promise<{ locale: string }>;
 }>) {
+	const { locale } = await params;
+
+	if (!hasLocale(routing.locales, locale)) {
+		notFound();
+	}
+
 	return (
 		<html
-			lang="en"
+			lang={locale}
 			className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
 		>
-			<body className="min-h-full flex flex-col">{children}</body>
+			<body className="min-h-full flex flex-col">
+				<NextIntlClientProvider>{children}</NextIntlClientProvider>
+			</body>
 		</html>
 	);
 }
