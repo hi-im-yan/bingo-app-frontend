@@ -69,7 +69,10 @@
 		"automatic": "Automático"
 	},
 	"errors": {
-		"connectionLost": "Conexão perdida. Reconectando...",
+		"connectionLost": "Conexão perdida",
+		"reconnecting": "Reconectando...",
+		"reconnected": "Conexão restaurada",
+		"unexpectedError": "Algo deu errado",
 		"roomNotFound": "Sala não encontrada",
 		"invalidCode": "Código de sala inválido",
 		"drawFailed": "Erro ao sortear número",

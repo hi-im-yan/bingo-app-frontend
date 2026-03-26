@@ -16,33 +16,46 @@ interface UseStompClientOptions {
 	onConnect?: () => void;
 	onDisconnect?: () => void;
 	onError?: (error: string) => void;
+	onReconnect?: () => void;
 	reconnectDelay?: number;
 }
 
 interface UseStompClientReturn {
 	connected: boolean;
+	reconnecting: boolean;
 	subscribe: (destination: string, callback: (message: IMessage) => void) => (() => void) | undefined;
 	publish: (destination: string, body: string) => void;
 }
 
 export function useStompClient(options: UseStompClientOptions = {}): UseStompClientReturn {
-	const { onConnect, onDisconnect, onError, reconnectDelay = 5000 } = options;
+	const { onConnect, onDisconnect, onError, onReconnect, reconnectDelay = 5000 } = options;
 	const [connected, setConnected] = useState(false);
+	const [reconnecting, setReconnecting] = useState(false);
 	const clientRef = useRef<Client | null>(null);
-	const callbacksRef = useRef({ onConnect, onDisconnect, onError });
+	const wasConnectedRef = useRef(false);
+	const callbacksRef = useRef({ onConnect, onDisconnect, onError, onReconnect });
 
-	callbacksRef.current = { onConnect, onDisconnect, onError };
+	callbacksRef.current = { onConnect, onDisconnect, onError, onReconnect };
 
 	useEffect(() => {
 		const client = new Client({
 			webSocketFactory: () => new SockJS(WS_URL),
 			reconnectDelay,
 			onConnect: () => {
+				const wasReconnect = wasConnectedRef.current;
 				setConnected(true);
+				setReconnecting(false);
+				wasConnectedRef.current = true;
+				if (wasReconnect) {
+					callbacksRef.current.onReconnect?.();
+				}
 				callbacksRef.current.onConnect?.();
 			},
 			onDisconnect: () => {
 				setConnected(false);
+				if (wasConnectedRef.current) {
+					setReconnecting(true);
+				}
 				callbacksRef.current.onDisconnect?.();
 			},
 			onStompError: (frame) => {
@@ -50,6 +63,10 @@ export function useStompClient(options: UseStompClientOptions = {}): UseStompCli
 				callbacksRef.current.onError?.(message);
 			},
 			onWebSocketError: () => {
+				setConnected(false);
+				if (wasConnectedRef.current) {
+					setReconnecting(true);
+				}
 				callbacksRef.current.onError?.("WebSocket connection failed");
 			},
 		});
@@ -60,6 +77,8 @@ export function useStompClient(options: UseStompClientOptions = {}): UseStompCli
 		return () => {
 			client.deactivate();
 			clientRef.current = null;
+			wasConnectedRef.current = false;
+			setReconnecting(false);
 		};
 	}, [reconnectDelay]);
 
@@ -81,5 +100,5 @@ export function useStompClient(options: UseStompClientOptions = {}): UseStompCli
 		client.publish({ destination, body });
 	}, []);
 
-	return { connected, subscribe, publish };
+	return { connected, reconnecting, subscribe, publish };
 }

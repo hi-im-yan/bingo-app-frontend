@@ -1,6 +1,6 @@
 # F4.1 — Error & Loading States
 
-**Status:** ready
+**Status:** done
 **Blocked by:** — (all dependencies done)
 **Branch:** feature/error-loading-states
 
@@ -11,11 +11,11 @@ Global error boundary. Loading skeletons for room data. Toast/notification syste
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 001 | Design error and loading state patterns | ready | — | Designer |
-| 002 | Build global error boundary | ready | — | Component Builder |
-| 003 | Build loading skeletons | ready | 001 | Component Builder |
-| 004 | Build toast/notification system | ready | 001 | Component Builder |
-| 005 | Add reconnection indicator to WS hook | ready | — | Logic Writer |
+| 001 | Design error and loading state patterns | done | — | Designer |
+| 002 | Build global error boundary | done | — | Component Builder |
+| 003 | Build loading skeletons | done | 001 | Component Builder |
+| 004 | Build toast/notification system | done | 001 | Component Builder |
+| 005 | Add reconnection indicator to WS hook | done | — | Logic Writer |
 
 ## Decisions
 - Error boundary at layout level catches unhandled errors

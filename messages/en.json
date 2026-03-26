@@ -69,7 +69,10 @@
 		"automatic": "Automatic"
 	},
 	"errors": {
-		"connectionLost": "Connection lost. Reconnecting...",
+		"connectionLost": "Connection lost",
+		"reconnecting": "Reconnecting...",
+		"reconnected": "Connection restored",
+		"unexpectedError": "Something went wrong",
 		"roomNotFound": "Room not found",
 		"invalidCode": "Invalid room code",
 		"drawFailed": "Failed to draw number",

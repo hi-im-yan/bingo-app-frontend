@@ -8,11 +8,13 @@ interface UseRoomSubscriptionOptions {
 	sessionCode: string;
 	initialRoom?: RoomDTO;
 	onError?: (error: string) => void;
+	onReconnect?: () => void;
 }
 
 interface UseRoomSubscriptionReturn {
 	room: RoomDTO | null;
 	connected: boolean;
+	reconnecting: boolean;
 	addNumber: (creatorHash: string, number: number) => void;
 	drawNumber: (creatorHash: string) => void;
 }
@@ -21,11 +23,13 @@ export function useRoomSubscription({
 	sessionCode,
 	initialRoom,
 	onError,
+	onReconnect,
 }: UseRoomSubscriptionOptions): UseRoomSubscriptionReturn {
 	const [room, setRoom] = useState<RoomDTO | null>(initialRoom ?? null);
 
-	const { connected, subscribe, publish } = useStompClient({
+	const { connected, reconnecting, subscribe, publish } = useStompClient({
 		onError,
+		onReconnect,
 	});
 
 	useEffect(() => {
@@ -68,5 +72,5 @@ export function useRoomSubscription({
 		[sessionCode, publish],
 	);
 
-	return { room, connected, addNumber, drawNumber };
+	return { room, connected, reconnecting, addNumber, drawNumber };
 }

@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
+import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
 
 const outfit = Outfit({
@@ -46,7 +47,10 @@ export default async function LocaleLayout({
 			className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
 		>
 			<body className="min-h-full flex flex-col">
-				<NextIntlClientProvider>{children}</NextIntlClientProvider>
+				<NextIntlClientProvider>
+					{children}
+					<Toaster position="bottom-center" />
+				</NextIntlClientProvider>
 			</body>
 		</html>
 	);

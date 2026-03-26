@@ -4,16 +4,21 @@ import { useTranslations } from "next-intl";
 
 interface ConnectionStatusProps {
 	connected: boolean;
+	reconnecting?: boolean;
 }
 
-export function ConnectionStatus({ connected }: ConnectionStatusProps) {
+export function ConnectionStatus({ connected, reconnecting }: ConnectionStatusProps) {
 	const t = useTranslations("errors");
 
 	if (connected) return null;
 
 	return (
-		<div className="rounded-lg bg-warning/10 px-4 py-3 text-center text-sm font-medium text-warning-foreground">
-			{t("connectionLost")}
+		<div
+			className={`rounded-lg bg-warning/10 px-4 py-3 text-center text-sm font-medium text-warning-foreground ${
+				reconnecting ? "animate-pulse" : ""
+			}`}
+		>
+			{reconnecting ? t("reconnecting") : t("connectionLost")}
 		</div>
 	);
 }

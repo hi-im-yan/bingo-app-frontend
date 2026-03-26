@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { api, BingoApiError } from "@/lib/api";
 import { useRoomSubscription } from "@/hooks/use-room-subscription";
 import type { RoomDTO } from "@/lib/types";
@@ -40,9 +41,21 @@ export default function PlayerRoomPage() {
 		fetchRoom();
 	}, [params.code, tErrors]);
 
-	const { room, connected } = useRoomSubscription({
+	const handleWsError = useCallback(
+		(error: string) => toast.error(error),
+		[],
+	);
+
+	const handleReconnect = useCallback(
+		() => toast.success(tErrors("reconnected")),
+		[tErrors],
+	);
+
+	const { room, connected, reconnecting } = useRoomSubscription({
 		sessionCode: params.code,
 		initialRoom: initialRoom ?? undefined,
+		onError: handleWsError,
+		onReconnect: handleReconnect,
 	});
 
 	const displayRoom = room ?? initialRoom;
@@ -78,7 +91,7 @@ export default function PlayerRoomPage() {
 
 	return (
 		<PageContainer>
-			<ConnectionStatus connected={connected} />
+			<ConnectionStatus connected={connected} reconnecting={reconnecting} />
 
 			<PageHeader>
 				<PageTitle>{displayRoom.name}</PageTitle>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
@@ -26,16 +27,13 @@ export function DeleteRoomButton({ sessionCode }: DeleteRoomButtonProps) {
 	const router = useRouter();
 	const [open, setOpen] = useState(false);
 	const [deleting, setDeleting] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-
 	async function handleDelete() {
 		setDeleting(true);
-		setError(null);
 		try {
 			await api.deleteRoom(sessionCode);
 			router.push("/");
 		} catch {
-			setError(tErrors("deleteFailed"));
+			toast.error(tErrors("deleteFailed"));
 			setDeleting(false);
 		}
 	}
@@ -52,9 +50,6 @@ export function DeleteRoomButton({ sessionCode }: DeleteRoomButtonProps) {
 					<DialogTitle>{t("deleteConfirm")}</DialogTitle>
 					<DialogDescription>{t("deleteWarning")}</DialogDescription>
 				</DialogHeader>
-				{error && (
-					<p className="text-sm text-destructive">{error}</p>
-				)}
 				<DialogFooter>
 					<Button
 						variant="outline"
