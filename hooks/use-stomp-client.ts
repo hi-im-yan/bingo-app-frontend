@@ -41,6 +41,8 @@ export function useStompClient(options: UseStompClientOptions = {}): UseStompCli
 		const client = new Client({
 			webSocketFactory: () => new SockJS(WS_URL),
 			reconnectDelay,
+			heartbeatIncoming: 10000,
+			heartbeatOutgoing: 10000,
 			onConnect: () => {
 				const wasReconnect = wasConnectedRef.current;
 				setConnected(true);
@@ -68,6 +70,12 @@ export function useStompClient(options: UseStompClientOptions = {}): UseStompCli
 					setReconnecting(true);
 				}
 				callbacksRef.current.onError?.("WebSocket connection failed");
+			},
+			onWebSocketClose: () => {
+				setConnected(false);
+				if (wasConnectedRef.current) {
+					setReconnecting(true);
+				}
 			},
 		});
 

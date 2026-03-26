@@ -33,7 +33,7 @@ describe("ShareRoomSection", () => {
 
 	it("renders the QR code image", () => {
 		renderSection("ABC123");
-		const img = screen.getByAltText("QR Code");
+		const img = screen.getByAltText("QR Code — ABC123");
 		expect(img).toBeInTheDocument();
 		expect(img).toHaveAttribute("src", expect.stringContaining("ABC123"));
 	});
