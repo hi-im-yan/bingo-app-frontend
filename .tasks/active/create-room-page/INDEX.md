@@ -1,6 +1,6 @@
 # F1.2 — Create Room Page
 
-**Status:** blocked
+**Status:** done
 **Blocked by:** F0.2 (shadcn-ui-setup), F0.3 (design-system), F0.4 (i18n-setup), F0.5 (types-and-api-client)
 **Branch:** feature/create-room-page
 
@@ -11,11 +11,14 @@ Form with room name (required), description (optional), draw mode selector (MANU
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 001 | Design create room form layout | ready | — | Designer |
-| 002 | Build form with Zod validation | ready | 001 | Component Builder |
-| 003 | Wire API call + localStorage + redirect | ready | 002 | Logic Writer |
-| 004 | Add i18n translations | ready | 002 | Component Builder |
+| 001 | Design create room form layout | done | — | Designer |
+| 002 | Build form with Zod validation | done | 001 | Component Builder |
+| 003 | Wire API call + localStorage + redirect | done | 002 | Logic Writer |
+| 004 | Add i18n translations | done | 002 | Component Builder |
 
 ## Decisions
-- Zod for form validation (same as v1)
+- Zod for form validation
 - react-hook-form + zodResolver for form state management
+- Draw mode selector as toggle buttons (not radio or select)
+- 409 conflict shown inline on name field
+- 5 tests covering form rendering, validation, mode selection, submission, conflict handling

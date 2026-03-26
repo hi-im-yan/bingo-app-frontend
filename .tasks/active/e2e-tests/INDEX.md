@@ -1,11 +1,11 @@
 # F4.3 — E2E Tests
 
-**Status:** blocked
-**Blocked by:** F4.2 (responsive-a11y)
+**Status:** ready
+**Blocked by:** — (F4.2 recommended first but not hard blocker)
 **Branch:** feature/e2e-tests
 
 ## Description
-Playwright test suite covering full user flows: create room → share → join → draw numbers → see updates. Manual and automatic draw modes. Error scenarios (invalid session code, duplicate name).
+Playwright test suite covering full user flows: create room -> share -> join -> draw numbers -> see updates. Manual and automatic draw modes. Error scenarios (invalid session code, duplicate name).
 
 ## Tasks
 
@@ -20,3 +20,9 @@ Playwright test suite covering full user flows: create room → share → join �
 ## Decisions
 - Tests run against a real or mocked backend (decide during implementation)
 - Cover both happy path and error scenarios
+- Playwright already configured (playwright.config.ts exists), chromium installed
+
+## Notes
+- Playwright can't fully run in WSL2 without sudo for browser deps (chromium installed without --with-deps)
+- E2E tests may need CI environment to run reliably
+- Smoke spec already exists at e2e/smoke.spec.ts

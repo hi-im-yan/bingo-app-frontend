@@ -1,6 +1,6 @@
 # F0.2 — shadcn/ui Setup
 
-**Status:** ready
+**Status:** done
 **Blocked by:** —
 **Branch:** feature/shadcn-ui-setup
 
@@ -11,8 +11,10 @@ Initialize shadcn/ui for Tailwind 4 + React 19. Configure component paths and al
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 001 | Initialize shadcn/ui and configure paths | ready | — | Component Builder |
-| 002 | Install base components | ready | 001 | Component Builder |
+| 001 | Initialize shadcn/ui and configure paths | done | — | Component Builder |
+| 002 | Install base components | done | 001 | Component Builder |
 
 ## Decisions
-- shadcn/ui: same as v1 but compatible with new stack. Not a runtime dependency — components are copied into project.
+- shadcn/ui v4 uses Base UI primitives (not Radix)
+- Form component manually created — shadcn CLI silently failed. Adapted for Base UI (native Label, no @radix-ui/react-slot)
+- Components installed: Button, Input, Dialog, Label, Skeleton, Form

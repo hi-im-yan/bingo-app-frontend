@@ -1,6 +1,6 @@
 # F1.1 — Home Page
 
-**Status:** blocked
+**Status:** done
 **Blocked by:** F0.3 (design-system), F0.4 (i18n-setup)
 **Branch:** feature/home-page
 
@@ -11,9 +11,12 @@ Landing page with two CTAs: Create Room / Join Room. App branding and layout usi
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 001 | Design home page layout | ready | — | Designer |
-| 002 | Build home page component | ready | 001 | Component Builder |
-| 003 | Add i18n translations | ready | 002 | Component Builder |
+| 001 | Design home page layout | done | — | Designer |
+| 002 | Build home page component | done | 001 | Component Builder |
+| 003 | Add i18n translations | done | 002 | Component Builder |
 
 ## Decisions
-- (pending Designer output)
+- Create Room is a link styled as button with inline Tailwind (NOT buttonVariants — server component boundary)
+- Join Room inline form on home page + standalone /join page
+- JoinRoomForm is a client component (form state), home page is server component
+- 5 tests covering rendering, navigation, form behavior

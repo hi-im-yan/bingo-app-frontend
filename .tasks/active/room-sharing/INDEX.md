@@ -1,21 +1,23 @@
 # F3.1 — Room Sharing
 
-**Status:** blocked
+**Status:** done
 **Blocked by:** F2.3 (admin-panel-manual)
 **Branch:** feature/room-sharing
 
 ## Description
-Invite link generation + copy to clipboard. QR code display via GET `/api/v1/room/{session-code}/qrcode`. Shareable URL routes player directly to room. i18n.
+ShareRoomSection component on admin panel. QR code display via backend endpoint as `<img>` src. Session code display with copy-to-clipboard button. i18n.
 
 ## Tasks
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 001 | Design sharing UI (link + QR section) | ready | — | Designer |
-| 002 | Build ShareRoom component | ready | 001 | Component Builder |
-| 003 | Wire QR code fetch + clipboard API | ready | 002 | Logic Writer |
-| 004 | Add i18n translations | ready | 002 | Component Builder |
+| 001 | Build ShareRoomSection component | done | — | Component Builder |
+| 002 | Wire QR code image + clipboard API | done | 001 | Logic Writer |
+| 003 | Add i18n translations | done | 001 | Component Builder |
 
 ## Decisions
-- QR code is a PNG from backend — display as <img> with the endpoint URL as src
-- Copy to clipboard uses navigator.clipboard API with fallback
+- QR code is a PNG from backend — displayed as `<img>` with `api.getQrCodeUrl(sessionCode)` as src
+- Copy to clipboard uses `navigator.clipboard.writeText` with "Copied!" feedback (2s timeout)
+- Inline section on admin panel, not a dialog
+- Implemented as feature/room-sharing branch (combined with F3.2)
+- 4 tests for ShareRoomSection

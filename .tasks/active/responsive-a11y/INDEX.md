@@ -1,7 +1,7 @@
 # F4.2 — Responsive & Accessibility
 
-**Status:** blocked
-**Blocked by:** F4.1 (error-loading-states)
+**Status:** ready
+**Blocked by:** — (F4.1 recommended first but not hard blocker)
 **Branch:** feature/responsive-a11y
 
 ## Description
@@ -19,3 +19,7 @@ Mobile-first responsive design audit. Keyboard navigation for number grid. ARIA 
 - Mobile-first: bingo is commonly played on phones
 - Number grid: arrow key navigation, Enter to select
 - Live region for drawn number announcements (screen readers)
+
+## Notes
+- Base design already mobile-first (max-w-lg, px-4, 44px+ touch targets)
+- This phase is an audit pass to catch gaps and add keyboard/screen reader support
