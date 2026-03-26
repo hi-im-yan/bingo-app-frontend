@@ -51,6 +51,7 @@ Project-level hooks in `.claude/hooks/` — wired in `.claude/settings.json`.
 - `detect-hardcoded-keys.sh` — PreToolUse: blocks hardcoded API keys/secrets
 - `lint-fix.sh` — PostToolUse: runs ESLint --fix on modified files
 - `run-tests.sh` — PostToolUse: runs test suite after edits
+- `build-check.sh` — PostToolUse: runs `npm run build` on server component files (page.tsx/layout.tsx) to catch client/server boundary violations
 - `coverage-check.sh` — Stop: verifies 80% coverage threshold
 Do NOT run test/lint commands manually — hooks handle it.
 

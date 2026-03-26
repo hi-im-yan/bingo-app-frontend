@@ -26,6 +26,10 @@
 					{
 						"type": "command",
 						"command": "bash .claude/hooks/run-tests.sh"
+					},
+					{
+						"type": "command",
+						"command": "bash .claude/hooks/build-check.sh"
 					}
 				]
 			}
