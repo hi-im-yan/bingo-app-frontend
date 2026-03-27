@@ -1,8 +1,11 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { GameCard, GameCardContent } from "@/components/ui/game-card";
+
+const DRAW_COOLDOWN_MS = 1500;
 
 interface AutomaticDrawPanelProps {
 	allDrawn: boolean;
@@ -11,6 +14,14 @@ interface AutomaticDrawPanelProps {
 
 export function AutomaticDrawPanel({ allDrawn, onDraw }: AutomaticDrawPanelProps) {
 	const t = useTranslations("admin");
+	const [cooldown, setCooldown] = useState(false);
+
+	const handleDraw = useCallback(() => {
+		if (cooldown) return;
+		onDraw();
+		setCooldown(true);
+		setTimeout(() => setCooldown(false), DRAW_COOLDOWN_MS);
+	}, [cooldown, onDraw]);
 
 	return (
 		<GameCard>
@@ -23,7 +34,8 @@ export function AutomaticDrawPanel({ allDrawn, onDraw }: AutomaticDrawPanelProps
 					<Button
 						size="lg"
 						className="min-h-11 w-full max-w-xs text-base"
-						onClick={onDraw}
+						onClick={handleDraw}
+						disabled={cooldown}
 					>
 						{t("drawNumber")}
 					</Button>
