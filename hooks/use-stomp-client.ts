@@ -40,7 +40,12 @@ export function useStompClient(options: UseStompClientOptions = {}): UseStompCli
 
 	useEffect(() => {
 		const client = new Client({
-			webSocketFactory: () => new SockJS(WS_URL, null, { withCredentials: false }),
+			webSocketFactory: () => {
+			const sock = new SockJS(WS_URL);
+			// Disable credentials to avoid CORS preflight issues
+			(sock as unknown as { withCredentials: boolean }).withCredentials = false;
+			return sock;
+		},
 			reconnectDelay,
 			heartbeatIncoming: 10000,
 			heartbeatOutgoing: 10000,
