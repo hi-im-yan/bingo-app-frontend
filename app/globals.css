@@ -155,3 +155,33 @@
 		@apply font-sans;
 	}
 }
+
+/* Ball drop / fade animations for drawn numbers */
+@keyframes ball-drop {
+	0% {
+		opacity: 0;
+		transform: translateY(-80px) scale(0.6);
+	}
+	50% {
+		opacity: 1;
+		transform: translateY(8px) scale(1.05);
+	}
+	70% {
+		transform: translateY(-4px) scale(0.98);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+@keyframes ball-fade-out {
+	0% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	100% {
+		opacity: 0;
+		transform: scale(0.7);
+	}
+}

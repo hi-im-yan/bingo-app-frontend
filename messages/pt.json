@@ -50,6 +50,7 @@
 		"drawnCount": "{count} de {total} sorteados",
 		"noNumbers": "Nenhum número sorteado ainda",
 		"lastDrawn": "Último sorteado",
+		"recentDraws": "Últimos sorteados",
 		"waitingForDraw": "Aguardando sorteio..."
 	},
 	"admin": {
@@ -64,6 +65,9 @@
 		"shareRoom": "Compartilhar Sala",
 		"sessionCode": "Código da sala",
 		"qrCode": "QR Code",
+		"showQr": "Mostrar QR Code",
+		"scanToJoin": "Escaneie este código para entrar na sala",
+		"roomUrl": "URL da sala",
 		"roomMode": "Modo: {mode}",
 		"manual": "Manual",
 		"automatic": "Automático"

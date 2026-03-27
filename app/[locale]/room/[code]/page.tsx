@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -11,7 +11,9 @@ import { PageContainer } from "@/components/page-container";
 import { PageHeader, PageTitle, PageDescription } from "@/components/page-header";
 import { CurrentNumber } from "@/components/current-number";
 import { DrawnNumbersBoard } from "@/components/drawn-numbers-board";
+import { LastDrawnNumbers } from "@/components/last-drawn-numbers";
 import { ConnectionStatus } from "@/components/connection-status";
+import { useBallSound } from "@/hooks/use-ball-sound";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function PlayerRoomPage() {
@@ -22,6 +24,8 @@ export default function PlayerRoomPage() {
 	const [initialRoom, setInitialRoom] = useState<RoomDTO | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
+	const { playSound, enableSound } = useBallSound();
+	const prevDrawnCountRef = useRef(0);
 
 	useEffect(() => {
 		async function fetchRoom() {
@@ -59,6 +63,15 @@ export default function PlayerRoomPage() {
 	});
 
 	const displayRoom = room ?? initialRoom;
+
+	useEffect(() => {
+		if (!displayRoom) return;
+		const count = displayRoom.drawnNumbers.length;
+		if (count > prevDrawnCountRef.current && prevDrawnCountRef.current > 0) {
+			playSound();
+		}
+		prevDrawnCountRef.current = count;
+	}, [displayRoom, playSound]);
 
 	if (loading) {
 		return (
@@ -100,8 +113,9 @@ export default function PlayerRoomPage() {
 				</PageDescription>
 			</PageHeader>
 
-			<div className="flex flex-col gap-6">
+			<div className="flex flex-col gap-6" onClick={enableSound}>
 				<CurrentNumber number={lastDrawn} />
+				<LastDrawnNumbers drawnNumbers={displayRoom.drawnNumbers} />
 				<DrawnNumbersBoard drawnNumbers={displayRoom.drawnNumbers} />
 			</div>
 		</PageContainer>
