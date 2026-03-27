@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -11,6 +11,8 @@ import { PageContainer } from "@/components/page-container";
 import { PageHeader, PageTitle, PageDescription } from "@/components/page-header";
 import { CurrentNumber } from "@/components/current-number";
 import { DrawnNumbersBoard } from "@/components/drawn-numbers-board";
+import { LastDrawnNumbers } from "@/components/last-drawn-numbers";
+import { useBallSound } from "@/hooks/use-ball-sound";
 import { ConnectionStatus } from "@/components/connection-status";
 import { ManualDrawPanel } from "@/components/manual-draw-panel";
 import { AutomaticDrawPanel } from "@/components/automatic-draw-panel";
@@ -27,6 +29,8 @@ export default function AdminPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const creatorHash = getCreatorHash(params.code);
+	const { playSound, enableSound } = useBallSound();
+	const prevDrawnCountRef = useRef(0);
 
 	useEffect(() => {
 		if (!creatorHash) {
@@ -71,6 +75,15 @@ export default function AdminPage() {
 
 	const displayRoom = room ?? initialRoom;
 
+	useEffect(() => {
+		if (!displayRoom) return;
+		const count = displayRoom.drawnNumbers.length;
+		if (count > prevDrawnCountRef.current && prevDrawnCountRef.current > 0) {
+			playSound();
+		}
+		prevDrawnCountRef.current = count;
+	}, [displayRoom, playSound]);
+
 	if (loading) {
 		return (
 			<PageContainer>
@@ -105,12 +118,14 @@ export default function AdminPage() {
 	const allDrawn = displayRoom.drawnNumbers.length >= TOTAL_NUMBERS;
 
 	function handleAddNumber(number: number) {
+		enableSound();
 		if (creatorHash) {
 			addNumber(creatorHash, number);
 		}
 	}
 
 	function handleDrawNumber() {
+		enableSound();
 		if (creatorHash) {
 			drawNumber(creatorHash);
 		}
@@ -127,8 +142,9 @@ export default function AdminPage() {
 				</PageDescription>
 			</PageHeader>
 
-			<div className="flex flex-col gap-6">
+			<div className="flex flex-col gap-6" onClick={enableSound}>
 				<CurrentNumber number={lastDrawn} />
+				<LastDrawnNumbers drawnNumbers={displayRoom.drawnNumbers} />
 
 				{displayRoom.drawMode === "MANUAL" ? (
 					<ManualDrawPanel

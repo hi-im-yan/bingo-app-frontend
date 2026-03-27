@@ -50,6 +50,7 @@
 		"drawnCount": "{count} of {total} drawn",
 		"noNumbers": "No numbers drawn yet",
 		"lastDrawn": "Last drawn",
+		"recentDraws": "Recent draws",
 		"waitingForDraw": "Waiting for draw..."
 	},
 	"admin": {
@@ -64,6 +65,9 @@
 		"shareRoom": "Share Room",
 		"sessionCode": "Room code",
 		"qrCode": "QR Code",
+		"showQr": "Show QR Code",
+		"scanToJoin": "Scan this code to join the room",
+		"roomUrl": "Room URL",
 		"roomMode": "Mode: {mode}",
 		"manual": "Manual",
 		"automatic": "Automatic"

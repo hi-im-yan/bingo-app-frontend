@@ -22,7 +22,12 @@ export function CurrentNumber({ number }: CurrentNumberProps) {
 	return (
 		<div role="status" aria-live="polite" className="flex flex-col items-center gap-2 py-4">
 			<p className="text-sm font-medium text-muted-foreground">{t("lastDrawn")}</p>
-			<BingoBall number={number} drawn size="lg" aria-hidden="true" />
+			<div
+				key={number}
+				style={{ animation: "ball-drop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards" }}
+			>
+				<BingoBall number={number} drawn size="lg" aria-hidden="true" />
+			</div>
 			<p className="text-base font-semibold">{formatBingoLabel(number)}</p>
 		</div>
 	);

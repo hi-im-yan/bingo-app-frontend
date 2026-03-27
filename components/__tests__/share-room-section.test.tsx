@@ -6,10 +6,15 @@ import messages from "@/messages/en.json";
 import { ShareRoomSection } from "../share-room-section";
 
 beforeAll(() => {
-	Object.defineProperty(navigator, "clipboard", {
-		value: { writeText: vi.fn().mockResolvedValue(undefined) },
-		configurable: true,
-	});
+	// jsdom doesn't provide navigator.clipboard by default
+	if (!navigator.clipboard) {
+		Object.defineProperty(navigator, "clipboard", {
+			value: { writeText: vi.fn().mockResolvedValue(undefined) },
+			configurable: true,
+		});
+	} else {
+		vi.spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
+	}
 });
 
 function renderSection(sessionCode = "ABC123") {
@@ -33,9 +38,9 @@ describe("ShareRoomSection", () => {
 
 	it("renders the QR code image", () => {
 		renderSection("ABC123");
-		const img = screen.getByAltText("QR Code — ABC123");
-		expect(img).toBeInTheDocument();
-		expect(img).toHaveAttribute("src", expect.stringContaining("ABC123"));
+		const imgs = screen.getAllByAltText("QR Code — ABC123");
+		expect(imgs.length).toBeGreaterThan(0);
+		expect(imgs[0]).toHaveAttribute("src", expect.stringContaining("ABC123"));
 	});
 
 	it("shows copied feedback after clicking copy", async () => {

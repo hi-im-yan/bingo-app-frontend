@@ -45,7 +45,7 @@ Polish the game experience with visual/audio feedback on number draws, better sh
 - Animation approach: CSS keyframes vs Framer Motion (decide during implementation)
 - Sound: use a small MP3/OGG in public/ — no external audio library needed
 - QR modal: reuse existing QR endpoint, render in dialog component
-- Last 3 numbers: derive from drawnNumbers array (last 3 items), no backend change needed
+- Last 3 numbers: derive from drawnNumbers/drawnLabels arrays (last 3 items from RoomDTO), no backend change needed
 
 ## Notes
 - Animations must not block interaction or feel sluggish on mobile
