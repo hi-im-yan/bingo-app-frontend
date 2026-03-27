@@ -8,9 +8,10 @@ function toSockJsUrl(url: string): string {
 	return url.replace(/^wss:/, "https:").replace(/^ws:/, "http:");
 }
 
-const WS_URL = toSockJsUrl(
-	process.env.NEXT_PUBLIC_WS_URL ?? "http://localhost:8080/bingo-connect",
+const WS_BASE = toSockJsUrl(
+	process.env.NEXT_PUBLIC_WS_URL ?? "http://localhost:8080",
 );
+const WS_URL = `${WS_BASE.replace(/\/$/, "")}/bingo-connect`;
 
 interface UseStompClientOptions {
 	onConnect?: () => void;
@@ -39,7 +40,7 @@ export function useStompClient(options: UseStompClientOptions = {}): UseStompCli
 
 	useEffect(() => {
 		const client = new Client({
-			webSocketFactory: () => new SockJS(WS_URL),
+			webSocketFactory: () => new SockJS(WS_URL, null, { withCredentials: false }),
 			reconnectDelay,
 			heartbeatIncoming: 10000,
 			heartbeatOutgoing: 10000,
