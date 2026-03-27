@@ -1,0 +1,82 @@
+{
+	"common": {
+		"appName": "Bingo",
+		"loading": "Loading...",
+		"error": "Something went wrong",
+		"retry": "Try again",
+		"back": "Back",
+		"close": "Close",
+		"confirm": "Confirm",
+		"cancel": "Cancel",
+		"copy": "Copy",
+		"copied": "Copied!",
+		"share": "Share"
+	},
+	"home": {
+		"title": "Bingo",
+		"subtitle": "Create or join a room to play",
+		"createRoom": "Create Room",
+		"joinRoom": "Join Room",
+		"joinPlaceholder": "Room code",
+		"joinButton": "Join"
+	},
+	"createRoom": {
+		"title": "Create Room",
+		"nameLabel": "Room name",
+		"namePlaceholder": "e.g. Friday Night Bingo",
+		"descriptionLabel": "Description (optional)",
+		"descriptionPlaceholder": "e.g. Community charity bingo",
+		"drawModeLabel": "Draw mode",
+		"manual": "Manual",
+		"manualDescription": "You pick the numbers",
+		"automatic": "Automatic",
+		"automaticDescription": "The system draws randomly",
+		"createButton": "Create Room",
+		"creating": "Creating...",
+		"nameRequired": "Room name is required",
+		"nameTooLong": "Name must be 255 characters or less",
+		"nameConflict": "A room with that name already exists"
+	},
+	"joinRoom": {
+		"title": "Join Room",
+		"codePlaceholder": "Room code (6 characters)",
+		"joinButton": "Join",
+		"joining": "Joining...",
+		"codeRequired": "Room code is required",
+		"roomNotFound": "Room not found"
+	},
+	"room": {
+		"drawnNumbers": "Drawn numbers",
+		"drawnCount": "{count} of {total} drawn",
+		"noNumbers": "No numbers drawn yet",
+		"lastDrawn": "Last drawn",
+		"waitingForDraw": "Waiting for draw..."
+	},
+	"admin": {
+		"title": "Creator Panel",
+		"drawNumber": "Draw Number",
+		"drawing": "Drawing...",
+		"allDrawn": "All numbers have been drawn!",
+		"selectNumber": "Select a number",
+		"deleteRoom": "Close Room",
+		"deleteConfirm": "Are you sure you want to close this room?",
+		"deleteWarning": "This action cannot be undone.",
+		"shareRoom": "Share Room",
+		"sessionCode": "Room code",
+		"qrCode": "QR Code",
+		"roomMode": "Mode: {mode}",
+		"manual": "Manual",
+		"automatic": "Automatic"
+	},
+	"errors": {
+		"connectionLost": "Connection lost",
+		"reconnecting": "Reconnecting...",
+		"reconnected": "Connection restored",
+		"unexpectedError": "Something went wrong",
+		"roomNotFound": "Room not found",
+		"invalidCode": "Invalid room code",
+		"drawFailed": "Failed to draw number",
+		"deleteFailed": "Failed to close room",
+		"generic": "Something went wrong. Please try again."
+	}
+}
