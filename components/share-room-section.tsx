@@ -55,10 +55,8 @@ export function ShareRoomSection({ sessionCode }: ShareRoomSectionProps) {
 
 					<div className="hidden md:flex md:items-center md:gap-2">
 						<Dialog>
-							<DialogTrigger asChild>
-								<Button variant="outline" size="sm">
-									{t("showQr")}
-								</Button>
+							<DialogTrigger render={<Button variant="outline" size="sm" />}>
+								{t("showQr")}
 							</DialogTrigger>
 							<DialogContent>
 								<DialogHeader>
@@ -75,10 +73,8 @@ export function ShareRoomSection({ sessionCode }: ShareRoomSectionProps) {
 										className="rounded-lg"
 									/>
 								</div>
-								<DialogClose asChild>
-									<Button variant="outline" className="w-full">
-										{tCommon("close")}
-									</Button>
+								<DialogClose render={<Button variant="outline" className="w-full" />}>
+									{tCommon("close")}
 								</DialogClose>
 							</DialogContent>
 						</Dialog>
