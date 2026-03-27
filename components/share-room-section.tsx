@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
-import { api } from "@/lib/api";
+import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { GameCard, GameCardHeader, GameCardTitle, GameCardContent } from "@/components/ui/game-card";
 import {
@@ -44,12 +44,9 @@ export function ShareRoomSection({ sessionCode }: ShareRoomSectionProps) {
 			</GameCardHeader>
 			<GameCardContent>
 				<div className="flex flex-col items-center gap-4">
-					{/* eslint-disable-next-line @next/next/no-img-element */}
-					<img
-						src={api.getQrCodeUrl(sessionCode)}
-						alt={`${t("qrCode")} — ${sessionCode}`}
-						width={200}
-						height={200}
+					<QRCodeSVG
+						value={getRoomUrl()}
+						size={200}
 						className="rounded-lg md:hidden"
 					/>
 
@@ -64,12 +61,9 @@ export function ShareRoomSection({ sessionCode }: ShareRoomSectionProps) {
 									<DialogDescription>{t("scanToJoin")}</DialogDescription>
 								</DialogHeader>
 								<div className="flex justify-center py-4">
-									{/* eslint-disable-next-line @next/next/no-img-element */}
-									<img
-										src={api.getQrCodeUrl(sessionCode)}
-										alt={`${t("qrCode")} — ${sessionCode}`}
-										width={300}
-										height={300}
+									<QRCodeSVG
+										value={getRoomUrl()}
+										size={300}
 										className="rounded-lg"
 									/>
 								</div>

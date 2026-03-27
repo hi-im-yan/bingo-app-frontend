@@ -36,11 +36,10 @@ describe("ShareRoomSection", () => {
 		expect(screen.getByText("XYZ789")).toBeInTheDocument();
 	});
 
-	it("renders the QR code image", () => {
-		renderSection("ABC123");
-		const imgs = screen.getAllByAltText("QR Code — ABC123");
-		expect(imgs.length).toBeGreaterThan(0);
-		expect(imgs[0]).toHaveAttribute("src", expect.stringContaining("ABC123"));
+	it("renders the QR code SVG", () => {
+		const { container } = renderSection("ABC123");
+		const svgs = container.querySelectorAll("svg");
+		expect(svgs.length).toBeGreaterThan(0);
 	});
 
 	it("shows copied feedback after clicking copy", async () => {
