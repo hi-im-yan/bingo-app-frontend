@@ -29,6 +29,20 @@ export interface DrawNumberForm {
 	"creator-hash": string;
 }
 
+export interface CorrectNumberForm {
+	"session-code": string;
+	"creator-hash": string;
+	"new-number": number;
+}
+
+export interface NumberCorrectionDTO {
+	oldNumber: number;
+	oldLabel: string;
+	newNumber: number;
+	newLabel: string;
+	message: string;
+}
+
 export interface ApiError {
 	status: number;
 	message: string;

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useRoomSubscription } from "../use-room-subscription";
-import type { RoomDTO } from "@/lib/types";
+import type { RoomDTO, NumberCorrectionDTO } from "@/lib/types";
 
 const mockSubscribe = vi.fn();
 const mockPublish = vi.fn();
@@ -114,5 +114,77 @@ describe("useRoomSubscription", () => {
 		);
 
 		expect(result.current.connected).toBe(true);
+	});
+
+	it("publishes correct-number with correct payload", () => {
+		const { result } = renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123" }),
+		);
+
+		act(() => {
+			result.current.correctNumber("hash-123", 42);
+		});
+
+		expect(mockPublish).toHaveBeenCalledWith(
+			"/app/correct-number",
+			JSON.stringify({
+				"session-code": "ABC123",
+				"creator-hash": "hash-123",
+				"new-number": 42,
+			}),
+		);
+	});
+
+	it("subscribes to corrections topic when onCorrection is provided", () => {
+		const onCorrection = vi.fn();
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123", onCorrection }),
+		);
+
+		expect(mockSubscribe).toHaveBeenCalledWith(
+			"/room/ABC123/corrections",
+			expect.any(Function),
+		);
+	});
+
+	it("does NOT subscribe to corrections topic when onCorrection is omitted", () => {
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123" }),
+		);
+
+		const correctionsCalls = mockSubscribe.mock.calls.filter(
+			([dest]) => dest === "/room/ABC123/corrections",
+		);
+		expect(correctionsCalls).toHaveLength(0);
+	});
+
+	it("calls onCorrection callback with parsed NumberCorrectionDTO", () => {
+		const onCorrection = vi.fn();
+		let correctionsCallback: (msg: { body: string }) => void = () => {};
+
+		mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+			if (dest === "/room/ABC123/corrections") {
+				correctionsCallback = cb;
+			}
+			return vi.fn();
+		});
+
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123", onCorrection }),
+		);
+
+		const correction: NumberCorrectionDTO = {
+			oldNumber: 5,
+			oldLabel: "B-5",
+			newNumber: 10,
+			newLabel: "B-10",
+			message: "Number corrected from B-5 to B-10",
+		};
+
+		act(() => {
+			correctionsCallback({ body: JSON.stringify(correction) });
+		});
+
+		expect(onCorrection).toHaveBeenCalledWith(correction);
 	});
 });

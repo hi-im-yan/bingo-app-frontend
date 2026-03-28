@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import type { RoomDTO, AddNumberForm, DrawNumberForm } from "@/lib/types";
+import type { RoomDTO, AddNumberForm, DrawNumberForm, CorrectNumberForm, NumberCorrectionDTO } from "@/lib/types";
 import { useStompClient } from "./use-stomp-client";
 
 interface UseRoomSubscriptionOptions {
@@ -9,6 +9,7 @@ interface UseRoomSubscriptionOptions {
 	initialRoom?: RoomDTO;
 	onError?: (error: string) => void;
 	onReconnect?: () => void;
+	onCorrection?: (correction: NumberCorrectionDTO) => void;
 }
 
 interface UseRoomSubscriptionReturn {
@@ -17,6 +18,7 @@ interface UseRoomSubscriptionReturn {
 	reconnecting: boolean;
 	addNumber: (creatorHash: string, number: number) => void;
 	drawNumber: (creatorHash: string) => void;
+	correctNumber: (creatorHash: string, newNumber: number) => void;
 }
 
 export function useRoomSubscription({
@@ -24,6 +26,7 @@ export function useRoomSubscription({
 	initialRoom,
 	onError,
 	onReconnect,
+	onCorrection,
 }: UseRoomSubscriptionOptions): UseRoomSubscriptionReturn {
 	const [room, setRoom] = useState<RoomDTO | null>(initialRoom ?? null);
 
@@ -72,5 +75,34 @@ export function useRoomSubscription({
 		[sessionCode, publish],
 	);
 
-	return { room, connected, reconnecting, addNumber, drawNumber };
+	const correctNumber = useCallback(
+		(creatorHash: string, newNumber: number) => {
+			const payload: CorrectNumberForm = {
+				"session-code": sessionCode,
+				"creator-hash": creatorHash,
+				"new-number": newNumber,
+			};
+			publish("/app/correct-number", JSON.stringify(payload));
+		},
+		[sessionCode, publish],
+	);
+
+	useEffect(() => {
+		if (!connected || !sessionCode || !onCorrection) return;
+
+		const unsubscribe = subscribe(`/room/${sessionCode}/corrections`, (message) => {
+			try {
+				const correction: NumberCorrectionDTO = JSON.parse(message.body);
+				onCorrection(correction);
+			} catch {
+				onError?.("Failed to parse correction update");
+			}
+		});
+
+		return () => {
+			unsubscribe?.();
+		};
+	}, [connected, sessionCode, subscribe, onCorrection, onError]);
+
+	return { room, connected, reconnecting, addNumber, drawNumber, correctNumber };
 }
