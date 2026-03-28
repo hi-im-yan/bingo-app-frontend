@@ -25,11 +25,16 @@
 					},
 					{
 						"type": "command",
-						"command": "bash .claude/hooks/run-tests.sh"
-					},
+						"command": "bash .claude/hooks/build-check.sh"
+					}
+				]
+			},
+			{
+				"matcher": "TaskUpdate",
+				"hooks": [
 					{
 						"type": "command",
-						"command": "bash .claude/hooks/build-check.sh"
+						"command": "bash .claude/hooks/run-tests.sh"
 					}
 				]
 			}

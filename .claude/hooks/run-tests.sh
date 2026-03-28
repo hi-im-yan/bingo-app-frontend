@@ -1,18 +1,12 @@
 #!/bin/bash
-# Runs test runner after Edit/Write on frontend source files
+# Runs test suite when a feature task is marked as completed
 # Detects vitest or jest from package.json
 
 INPUT=$(cat)
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+NEW_STATUS=$(echo "$INPUT" | jq -r '.tool_input.status // empty')
 
-# Only run for TS/TSX/JS/JSX/Vue files
-if [[ "$FILE_PATH" != *.ts && "$FILE_PATH" != *.tsx && "$FILE_PATH" != *.js && "$FILE_PATH" != *.jsx && "$FILE_PATH" != *.vue ]]; then
-	exit 0
-fi
-
-# Skip config files
-BASENAME=$(basename "$FILE_PATH")
-if [[ "$BASENAME" == *.config.* || "$BASENAME" == *.d.ts ]]; then
+# Only run when a task is marked completed
+if [[ "$NEW_STATUS" != "completed" ]]; then
 	exit 0
 fi
 
