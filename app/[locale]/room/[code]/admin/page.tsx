@@ -18,6 +18,7 @@ import { ManualDrawPanel } from "@/components/manual-draw-panel";
 import { AutomaticDrawPanel } from "@/components/automatic-draw-panel";
 import { ShareRoomSection } from "@/components/share-room-section";
 import { DeleteRoomButton } from "@/components/delete-room-button";
+import { CorrectNumberDialog } from "@/components/correct-number-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TOTAL_NUMBERS } from "@/lib/constants";
 
@@ -66,11 +67,18 @@ export default function AdminPage() {
 		[tErrors],
 	);
 
-	const { room, connected, reconnecting, addNumber, drawNumber } = useRoomSubscription({
+	const handleCorrection = useCallback(
+		(correction: import("@/lib/types").NumberCorrectionDTO) =>
+			toast.warning(t("correctionToast", { message: correction.message })),
+		[t],
+	);
+
+	const { room, connected, reconnecting, addNumber, drawNumber, correctNumber } = useRoomSubscription({
 		sessionCode: params.code,
 		initialRoom: initialRoom ?? undefined,
 		onError: handleWsError,
 		onReconnect: handleReconnect,
+		onCorrection: handleCorrection,
 	});
 
 	const displayRoom = room ?? initialRoom;
@@ -131,6 +139,12 @@ export default function AdminPage() {
 		}
 	}
 
+	function handleCorrectNumber(newNumber: number) {
+		if (creatorHash) {
+			correctNumber(creatorHash, newNumber);
+		}
+	}
+
 	return (
 		<PageContainer>
 			<ConnectionStatus connected={connected} reconnecting={reconnecting} />
@@ -143,7 +157,16 @@ export default function AdminPage() {
 			</PageHeader>
 
 			<div className="flex flex-col gap-6" onClick={enableSound}>
-				<CurrentNumber number={lastDrawn} />
+				<div className="flex flex-col items-center gap-2">
+					<CurrentNumber number={lastDrawn} />
+					{displayRoom.drawMode === "MANUAL" && (
+						<CorrectNumberDialog
+							lastDrawn={lastDrawn}
+							drawnNumbers={displayRoom.drawnNumbers}
+							onCorrect={handleCorrectNumber}
+						/>
+					)}
+				</div>
 				<LastDrawnNumbers drawnNumbers={displayRoom.drawnNumbers} />
 
 				{displayRoom.drawMode === "MANUAL" ? (

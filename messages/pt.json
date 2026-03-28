@@ -51,7 +51,8 @@
 		"noNumbers": "Nenhum número sorteado ainda",
 		"lastDrawn": "Último sorteado",
 		"recentDraws": "Últimos sorteados",
-		"waitingForDraw": "Aguardando sorteio..."
+		"waitingForDraw": "Aguardando sorteio...",
+		"correctionToast": "Número corrigido: {message}"
 	},
 	"admin": {
 		"title": "Painel do Criador",
@@ -70,7 +71,15 @@
 		"roomUrl": "URL da sala",
 		"roomMode": "Modo: {mode}",
 		"manual": "Manual",
-		"automatic": "Automático"
+		"automatic": "Automático",
+		"correctNumber": "Corrigir",
+		"correctNumberTitle": "Selecione o número substituto",
+		"correctNumberDesc": "Substituir {number} por outro número",
+		"correctConfirmTitle": "Confirmar correção",
+		"correctConfirmDesc": "Substituir {old} por {new}?",
+		"correctOld": "Atual",
+		"correctNew": "Novo",
+		"correctionToast": "Número corrigido: {message}"
 	},
 	"errors": {
 		"connectionLost": "Conexão perdida",

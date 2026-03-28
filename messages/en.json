@@ -51,7 +51,8 @@
 		"noNumbers": "No numbers drawn yet",
 		"lastDrawn": "Last drawn",
 		"recentDraws": "Recent draws",
-		"waitingForDraw": "Waiting for draw..."
+		"waitingForDraw": "Waiting for draw...",
+		"correctionToast": "Number corrected: {message}"
 	},
 	"admin": {
 		"title": "Creator Panel",
@@ -70,7 +71,15 @@
 		"roomUrl": "Room URL",
 		"roomMode": "Mode: {mode}",
 		"manual": "Manual",
-		"automatic": "Automatic"
+		"automatic": "Automatic",
+		"correctNumber": "Correct",
+		"correctNumberTitle": "Select replacement number",
+		"correctNumberDesc": "Replace {number} with a different number",
+		"correctConfirmTitle": "Confirm correction",
+		"correctConfirmDesc": "Replace {old} with {new}?",
+		"correctOld": "Current",
+		"correctNew": "New",
+		"correctionToast": "Number corrected: {message}"
 	},
 	"errors": {
 		"connectionLost": "Connection lost",

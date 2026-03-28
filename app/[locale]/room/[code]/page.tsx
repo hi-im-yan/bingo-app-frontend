@@ -26,6 +26,11 @@ export default function PlayerRoomPage() {
 	const [loading, setLoading] = useState(true);
 	const { playSound, enableSound } = useBallSound();
 	const prevDrawnCountRef = useRef(0);
+	const handleCorrection = useCallback(
+		(correction: import("@/lib/types").NumberCorrectionDTO) =>
+			toast.warning(t("correctionToast", { message: correction.message })),
+		[t],
+	);
 
 	useEffect(() => {
 		async function fetchRoom() {
@@ -60,6 +65,7 @@ export default function PlayerRoomPage() {
 		initialRoom: initialRoom ?? undefined,
 		onError: handleWsError,
 		onReconnect: handleReconnect,
+		onCorrection: handleCorrection,
 	});
 
 	const displayRoom = room ?? initialRoom;
