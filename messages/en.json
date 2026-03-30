@@ -52,7 +52,8 @@
 		"lastDrawn": "Last drawn",
 		"recentDraws": "Recent draws",
 		"waitingForDraw": "Waiting for draw...",
-		"correctionToast": "Number corrected: {message}"
+		"correctionToast": "Number corrected: {message}",
+		"numberDrawn": "Number drawn: {label}"
 	},
 	"admin": {
 		"title": "Creator Panel",

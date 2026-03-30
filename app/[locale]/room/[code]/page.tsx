@@ -14,6 +14,7 @@ import { DrawnNumbersBoard } from "@/components/drawn-numbers-board";
 import { LastDrawnNumbers } from "@/components/last-drawn-numbers";
 import { ConnectionStatus } from "@/components/connection-status";
 import { useBallSound } from "@/hooks/use-ball-sound";
+import { DrawPopup } from "@/components/draw-popup";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function PlayerRoomPage() {
@@ -25,7 +26,8 @@ export default function PlayerRoomPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const { playSound, enableSound } = useBallSound();
-	const prevDrawnCountRef = useRef(0);
+	const prevDrawnCountRef = useRef(-1);
+	const [popupNumber, setPopupNumber] = useState<number | null>(null);
 	const handleCorrection = useCallback(
 		(correction: import("@/lib/types").NumberCorrectionDTO) =>
 			toast.warning(t("correctionToast", { message: correction.message })),
@@ -70,11 +72,19 @@ export default function PlayerRoomPage() {
 
 	const displayRoom = room ?? initialRoom;
 
+	const handlePopupDismiss = useCallback(() => setPopupNumber(null), []);
+
 	useEffect(() => {
 		if (!displayRoom) return;
 		const count = displayRoom.drawnNumbers.length;
-		if (count > prevDrawnCountRef.current && prevDrawnCountRef.current > 0) {
+		if (prevDrawnCountRef.current === -1) {
+			// First render — snapshot current count, don't trigger
+			prevDrawnCountRef.current = count;
+			return;
+		}
+		if (count > prevDrawnCountRef.current) {
 			playSound();
+			setPopupNumber(displayRoom.drawnNumbers[count - 1]);
 		}
 		prevDrawnCountRef.current = count;
 	}, [displayRoom, playSound]);
@@ -110,6 +120,7 @@ export default function PlayerRoomPage() {
 
 	return (
 		<PageContainer>
+			<DrawPopup number={popupNumber} onDismiss={handlePopupDismiss} />
 			<ConnectionStatus connected={connected} reconnecting={reconnecting} />
 
 			<PageHeader>

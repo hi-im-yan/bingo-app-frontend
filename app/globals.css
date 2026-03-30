@@ -185,3 +185,46 @@
 		transform: scale(0.7);
 	}
 }
+
+/* Draw popup overlay animations */
+@keyframes popup-drop-spin {
+	0% {
+		opacity: 0;
+		transform: translateY(-120px) scale(0.5) rotate(-720deg);
+	}
+	50% {
+		opacity: 1;
+		transform: translateY(10px) scale(1.1) rotate(20deg);
+	}
+	70% {
+		transform: translateY(-5px) scale(0.95) rotate(-10deg);
+	}
+	85% {
+		transform: translateY(3px) scale(1.02) rotate(5deg);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0) scale(1) rotate(0deg);
+	}
+}
+
+@keyframes popup-fade-out {
+	0% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	100% {
+		opacity: 0;
+		transform: scale(0.8);
+	}
+}
+
+@keyframes popup-backdrop-in {
+	0% { opacity: 0; }
+	100% { opacity: 1; }
+}
+
+@keyframes popup-backdrop-out {
+	0% { opacity: 1; }
+	100% { opacity: 0; }
+}

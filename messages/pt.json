@@ -52,7 +52,8 @@
 		"lastDrawn": "Último sorteado",
 		"recentDraws": "Últimos sorteados",
 		"waitingForDraw": "Aguardando sorteio...",
-		"correctionToast": "Número corrigido: {message}"
+		"correctionToast": "Número corrigido: {message}",
+		"numberDrawn": "Número sorteado: {label}"
 	},
 	"admin": {
 		"title": "Painel do Criador",
