@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Home, HelpCircle } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useHelpVisible } from "@/hooks/use-help-visible";
+import { ThemePicker } from "@/components/theme-picker";
 import { cn } from "@/lib/utils";
 
 export function AppHeader() {
@@ -19,7 +20,9 @@ export function AppHeader() {
 					<Home className="size-4" />
 				</Link>
 
-				{/* Right: Help toggle */}
+				{/* Right: Theme picker + Help toggle */}
+				<div className="flex items-center gap-1">
+				<ThemePicker />
 				<Button
 					variant="ghost"
 					size="icon-sm"
@@ -29,6 +32,7 @@ export function AppHeader() {
 				>
 					<HelpCircle className={cn("size-4", helpVisible && "text-primary")} />
 				</Button>
+				</div>
 			</div>
 		</header>
 	);
