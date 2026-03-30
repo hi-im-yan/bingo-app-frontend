@@ -12,12 +12,12 @@ App header with home button and help toggle (localStorage persisted). Contextual
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 001 | useHelpVisible hook (localStorage, state, toggleHelp, hideHelp) | ready | — | Logic Writer |
-| 002 | AppHeader component (home link, help toggle, layout integration) | blocked | 001 | Component Builder |
-| 003 | HelpText component (conditional render wrapper, styled) | blocked | 001 | Component Builder |
-| 004 | Help text on home + create + join pages | blocked | 002, 003 | Component Builder |
-| 005 | Help text on player + admin pages (with auto-hide on first draw) | blocked | 002, 003 | Component Builder |
-| 006 | i18n translations (pt + en) | blocked | 004, 005 | Component Builder |
+| 001 | useHelpVisible hook (localStorage, state, toggleHelp, hideHelp) | done | — | Logic Writer |
+| 002 | AppHeader component (home link, help toggle, layout integration) | done | — | Component Builder |
+| 003 | HelpText component (conditional render wrapper, styled) | done | — | Component Builder |
+| 004 | Help text on home + create + join pages | done | — | Component Builder |
+| 005 | Help text on player + admin pages (with auto-hide on first draw) | done | — | Component Builder |
+| 006 | i18n translations (pt + en) | done | — | Component Builder |
 
 ## Decisions
 - Help default ON for first-time users, persisted in localStorage as `bingo-help-visible`

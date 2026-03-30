@@ -6,6 +6,7 @@ import { useRouter } from "@/i18n/navigation";
 import { api, BingoApiError } from "@/lib/api";
 import { PageContainer } from "@/components/page-container";
 import { PageHeader, PageTitle } from "@/components/page-header";
+import { HelpText } from "@/components/help-text";
 import { GameCard, GameCardContent } from "@/components/ui/game-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,6 +50,10 @@ export default function JoinRoomPage() {
 			<PageHeader>
 				<PageTitle>{t("title")}</PageTitle>
 			</PageHeader>
+
+			<HelpText>
+				{t("help.joinIntro")}
+			</HelpText>
 
 			<GameCard>
 				<GameCardContent>

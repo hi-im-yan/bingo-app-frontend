@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { PageContainer } from "@/components/page-container";
 import { PageHeader, PageTitle, PageDescription } from "@/components/page-header";
+import { HelpText } from "@/components/help-text";
 import { JoinRoomForm } from "./join-room-form";
 
 export default function Home() {
@@ -14,6 +15,10 @@ export default function Home() {
 				<PageDescription className="text-lg">{t("subtitle")}</PageDescription>
 			</PageHeader>
 
+			<HelpText>
+				{t("help.intro")}
+			</HelpText>
+
 			<div className="flex flex-col gap-4">
 				<Link
 					href="/create"
@@ -21,6 +26,9 @@ export default function Home() {
 				>
 					{t("createRoom")}
 				</Link>
+				<HelpText className="text-xs">
+					{t("help.createHint")}
+				</HelpText>
 
 				<div className="flex items-center gap-3 py-2">
 					<div className="h-px flex-1 bg-border" />
@@ -29,6 +37,9 @@ export default function Home() {
 				</div>
 
 				<JoinRoomForm />
+				<HelpText className="text-xs">
+					{t("help.joinHint")}
+				</HelpText>
 			</div>
 		</PageContainer>
 	);

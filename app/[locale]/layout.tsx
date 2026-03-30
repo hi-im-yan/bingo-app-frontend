@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { Toaster } from "@/components/ui/sonner";
+import { AppHeader } from "@/components/app-header";
 import "../globals.css";
 
 const outfit = Outfit({
@@ -48,6 +49,7 @@ export default async function LocaleLayout({
 		>
 			<body className="min-h-full flex flex-col">
 				<NextIntlClientProvider>
+					<AppHeader />
 					{children}
 					<Toaster position="bottom-center" />
 				</NextIntlClientProvider>

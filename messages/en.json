@@ -10,7 +10,10 @@
 		"cancel": "Cancel",
 		"copy": "Copy",
 		"copied": "Copied!",
-		"share": "Share"
+		"share": "Share",
+		"home": "Home",
+		"showHelp": "Show help",
+		"hideHelp": "Hide help"
 	},
 	"home": {
 		"title": "Bingo",
@@ -18,7 +21,12 @@
 		"createRoom": "Create Room",
 		"joinRoom": "Join Room",
 		"joinPlaceholder": "Room code",
-		"joinButton": "Join"
+		"joinButton": "Join",
+		"help": {
+			"intro": "Host a bingo game for your group. Create a room to draw numbers and share with players, or join an existing room with a code from your host.",
+			"createHint": "You'll be the host — pick or draw numbers and share the room code with your players.",
+			"joinHint": "Enter the 6-character code your host shared with you."
+		}
 	},
 	"createRoom": {
 		"title": "Create Room",
@@ -35,7 +43,11 @@
 		"creating": "Creating...",
 		"nameRequired": "Room name is required",
 		"nameTooLong": "Name must be 255 characters or less",
-		"nameConflict": "A room with that name already exists"
+		"nameConflict": "A room with that name already exists",
+		"help": {
+			"createIntro": "Set up your bingo room. After creating, you'll get a room code and QR code to share with your players.",
+			"drawModeExplained": "Manual mode is for when you have a bingo globe and want to pick the numbers yourself. Automatic mode lets the system draw random numbers for you."
+		}
 	},
 	"joinRoom": {
 		"title": "Join Room",
@@ -43,7 +55,10 @@
 		"joinButton": "Join",
 		"joining": "Joining...",
 		"codeRequired": "Room code is required",
-		"roomNotFound": "Room not found"
+		"roomNotFound": "Room not found",
+		"help": {
+			"joinIntro": "Ask your host for the 6-character room code. You can also scan the QR code if they have one displayed."
+		}
 	},
 	"room": {
 		"drawnNumbers": "Drawn numbers",
@@ -53,7 +68,11 @@
 		"recentDraws": "Recent draws",
 		"waitingForDraw": "Waiting for draw...",
 		"correctionToast": "Number corrected: {message}",
-		"numberDrawn": "Number drawn: {label}"
+		"numberDrawn": "Number drawn: {label}",
+		"help": {
+			"playerIntro": "The host is drawing numbers. When a number is called, it will appear here. Mark it off on your bingo card!",
+			"waitingForHost": "Waiting for the host to start drawing numbers. Keep this page open — updates appear in real time."
+		}
 	},
 	"admin": {
 		"title": "Creator Panel",
@@ -80,7 +99,14 @@
 		"correctConfirmDesc": "Replace {old} with {new}?",
 		"correctOld": "Current",
 		"correctNew": "New",
-		"correctionToast": "Number corrected: {message}"
+		"correctionToast": "Number corrected: {message}",
+		"help": {
+			"adminIntro": "You're the host. Numbers you draw are shown live to all players in this room.",
+			"manualMode": "Click on a number to draw it. Already drawn numbers are disabled.",
+			"automaticMode": "Click the button to draw a random number.",
+			"correction": "Drew the wrong number? Use the Correct button to fix it.",
+			"shareRoom": "Share the room code or QR code with your players so they can follow along."
+		}
 	},
 	"errors": {
 		"connectionLost": "Connection lost",

@@ -10,7 +10,10 @@
 		"cancel": "Cancelar",
 		"copy": "Copiar",
 		"copied": "Copiado!",
-		"share": "Compartilhar"
+		"share": "Compartilhar",
+		"home": "Início",
+		"showHelp": "Mostrar ajuda",
+		"hideHelp": "Ocultar ajuda"
 	},
 	"home": {
 		"title": "Bingo",
@@ -18,7 +21,12 @@
 		"createRoom": "Criar Sala",
 		"joinRoom": "Entrar em Sala",
 		"joinPlaceholder": "Código da sala",
-		"joinButton": "Entrar"
+		"joinButton": "Entrar",
+		"help": {
+			"intro": "Organize um jogo de bingo para seu grupo. Crie uma sala para sortear números e compartilhe com os jogadores, ou entre em uma sala existente com o código do anfitrião.",
+			"createHint": "Você será o anfitrião — escolha ou sorteie números e compartilhe o código da sala com seus jogadores.",
+			"joinHint": "Digite o código de 6 caracteres que seu anfitrião compartilhou com você."
+		}
 	},
 	"createRoom": {
 		"title": "Criar Sala",
@@ -35,7 +43,11 @@
 		"creating": "Criando...",
 		"nameRequired": "Nome da sala é obrigatório",
 		"nameTooLong": "Nome deve ter no máximo 255 caracteres",
-		"nameConflict": "Já existe uma sala com esse nome"
+		"nameConflict": "Já existe uma sala com esse nome",
+		"help": {
+			"createIntro": "Configure sua sala de bingo. Após criar, você receberá um código de sala e QR code para compartilhar com seus jogadores.",
+			"drawModeExplained": "O modo manual é para quando você tem um globo de bingo e quer escolher os números. O modo automático deixa o sistema sortear números aleatórios para você."
+		}
 	},
 	"joinRoom": {
 		"title": "Entrar na Sala",
@@ -43,7 +55,10 @@
 		"joinButton": "Entrar",
 		"joining": "Entrando...",
 		"codeRequired": "Código da sala é obrigatório",
-		"roomNotFound": "Sala não encontrada"
+		"roomNotFound": "Sala não encontrada",
+		"help": {
+			"joinIntro": "Peça ao anfitrião o código de 6 caracteres da sala. Você também pode escanear o QR code se ele estiver exibido."
+		}
 	},
 	"room": {
 		"drawnNumbers": "Números sorteados",
@@ -53,7 +68,11 @@
 		"recentDraws": "Últimos sorteados",
 		"waitingForDraw": "Aguardando sorteio...",
 		"correctionToast": "Número corrigido: {message}",
-		"numberDrawn": "Número sorteado: {label}"
+		"numberDrawn": "Número sorteado: {label}",
+		"help": {
+			"playerIntro": "O anfitrião está sorteando números. Quando um número for sorteado, ele aparecerá aqui. Marque no seu cartão de bingo!",
+			"waitingForHost": "Aguardando o anfitrião começar a sortear. Mantenha esta página aberta — as atualizações aparecem em tempo real."
+		}
 	},
 	"admin": {
 		"title": "Painel do Criador",
@@ -80,7 +99,14 @@
 		"correctConfirmDesc": "Substituir {old} por {new}?",
 		"correctOld": "Atual",
 		"correctNew": "Novo",
-		"correctionToast": "Número corrigido: {message}"
+		"correctionToast": "Número corrigido: {message}",
+		"help": {
+			"adminIntro": "Você é o anfitrião. Os números sorteados são exibidos ao vivo para todos os jogadores nesta sala.",
+			"manualMode": "Clique em um número para sorteá-lo. Números já sorteados ficam desabilitados.",
+			"automaticMode": "Clique no botão para sortear um número aleatório.",
+			"correction": "Sorteou o número errado? Use o botão Corrigir para corrigi-lo.",
+			"shareRoom": "Compartilhe o código da sala ou QR code com seus jogadores para que possam acompanhar."
+		}
 	},
 	"errors": {
 		"connectionLost": "Conexão perdida",

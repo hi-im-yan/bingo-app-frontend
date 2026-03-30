@@ -16,6 +16,8 @@ import { ConnectionStatus } from "@/components/connection-status";
 import { useBallSound } from "@/hooks/use-ball-sound";
 import { DrawPopup } from "@/components/draw-popup";
 import { Skeleton } from "@/components/ui/skeleton";
+import { HelpText } from "@/components/help-text";
+import { useHelpVisible } from "@/hooks/use-help-visible";
 
 export default function PlayerRoomPage() {
 	const params = useParams<{ code: string }>();
@@ -26,6 +28,7 @@ export default function PlayerRoomPage() {
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const { playSound, enableSound } = useBallSound();
+	const { hideHelp } = useHelpVisible();
 	const prevDrawnCountRef = useRef(-1);
 	const [popupNumber, setPopupNumber] = useState<number | null>(null);
 	const handleCorrection = useCallback(
@@ -85,9 +88,10 @@ export default function PlayerRoomPage() {
 		if (count > prevDrawnCountRef.current) {
 			playSound();
 			setPopupNumber(displayRoom.drawnNumbers[count - 1]);
+			hideHelp();
 		}
 		prevDrawnCountRef.current = count;
-	}, [displayRoom, playSound]);
+	}, [displayRoom, playSound, hideHelp]);
 
 	if (loading) {
 		return (
@@ -130,8 +134,17 @@ export default function PlayerRoomPage() {
 				</PageDescription>
 			</PageHeader>
 
+			<HelpText>
+				{t("help.playerIntro")}
+			</HelpText>
+
 			<div className="flex flex-col gap-6" onClick={enableSound}>
 				<CurrentNumber number={lastDrawn} />
+				{displayRoom.drawnNumbers.length === 0 && (
+					<HelpText className="text-xs">
+						{t("help.waitingForHost")}
+					</HelpText>
+				)}
 				<LastDrawnNumbers drawnNumbers={displayRoom.drawnNumbers} />
 				<DrawnNumbersBoard drawnNumbers={displayRoom.drawnNumbers} />
 			</div>

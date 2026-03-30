@@ -15,6 +15,8 @@ import { LastDrawnNumbers } from "@/components/last-drawn-numbers";
 import { useBallSound } from "@/hooks/use-ball-sound";
 import { DrawPopup } from "@/components/draw-popup";
 import { ConnectionStatus } from "@/components/connection-status";
+import { HelpText } from "@/components/help-text";
+import { useHelpVisible } from "@/hooks/use-help-visible";
 import { ManualDrawPanel } from "@/components/manual-draw-panel";
 import { AutomaticDrawPanel } from "@/components/automatic-draw-panel";
 import { ShareRoomSection } from "@/components/share-room-section";
@@ -32,6 +34,7 @@ export default function AdminPage() {
 	const [loading, setLoading] = useState(true);
 	const creatorHash = getCreatorHash(params.code);
 	const { playSound, enableSound } = useBallSound();
+	const { hideHelp } = useHelpVisible();
 	const prevDrawnCountRef = useRef(-1);
 	const [popupNumber, setPopupNumber] = useState<number | null>(null);
 
@@ -98,9 +101,10 @@ export default function AdminPage() {
 		if (count > prevDrawnCountRef.current) {
 			playSound();
 			setPopupNumber(displayRoom.drawnNumbers[count - 1]);
+			hideHelp();
 		}
 		prevDrawnCountRef.current = count;
-	}, [displayRoom, playSound]);
+	}, [displayRoom, playSound, hideHelp]);
 
 	if (loading) {
 		return (
@@ -167,31 +171,53 @@ export default function AdminPage() {
 				</PageDescription>
 			</PageHeader>
 
+			<HelpText>
+				{t("help.adminIntro")}
+			</HelpText>
+
 			<div className="flex flex-col gap-6" onClick={enableSound}>
 				<div className="flex flex-col items-center gap-2">
 					<CurrentNumber number={lastDrawn} />
 					{displayRoom.drawMode === "MANUAL" && (
-						<CorrectNumberDialog
-							lastDrawn={lastDrawn}
-							drawnNumbers={displayRoom.drawnNumbers}
-							onCorrect={handleCorrectNumber}
-						/>
+						<>
+							<CorrectNumberDialog
+								lastDrawn={lastDrawn}
+								drawnNumbers={displayRoom.drawnNumbers}
+								onCorrect={handleCorrectNumber}
+							/>
+							<HelpText className="text-xs">
+								{t("help.correction")}
+							</HelpText>
+						</>
 					)}
 				</div>
 				<LastDrawnNumbers drawnNumbers={displayRoom.drawnNumbers} />
 
 				{displayRoom.drawMode === "MANUAL" ? (
-					<ManualDrawPanel
-						drawnNumbers={displayRoom.drawnNumbers}
-						onDrawNumber={handleAddNumber}
-					/>
+					<>
+						<HelpText className="text-xs">
+							{t("help.manualMode")}
+						</HelpText>
+						<ManualDrawPanel
+							drawnNumbers={displayRoom.drawnNumbers}
+							onDrawNumber={handleAddNumber}
+						/>
+					</>
 				) : (
-					<AutomaticDrawPanel
-						allDrawn={allDrawn}
-						onDraw={handleDrawNumber}
-					/>
+					<>
+						<HelpText className="text-xs">
+							{t("help.automaticMode")}
+						</HelpText>
+						<AutomaticDrawPanel
+							allDrawn={allDrawn}
+							onDraw={handleDrawNumber}
+						/>
+					</>
 				)}
 
+				<HelpText className="text-xs">
+					{t("help.shareRoom")}
+				</HelpText>
 				<ShareRoomSection sessionCode={displayRoom.sessionCode} />
 
 				<DrawnNumbersBoard drawnNumbers={displayRoom.drawnNumbers} />

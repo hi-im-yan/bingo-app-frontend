@@ -22,6 +22,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { HelpText } from "@/components/help-text";
 
 const createRoomSchema = z.object({
 	name: z.string().min(1).max(255),
@@ -74,6 +75,10 @@ export default function CreateRoomPage() {
 			<PageHeader>
 				<PageTitle>{t("title")}</PageTitle>
 			</PageHeader>
+
+			<HelpText>
+				{t("help.createIntro")}
+			</HelpText>
 
 			<GameCard>
 				<GameCardContent>
@@ -131,6 +136,9 @@ export default function CreateRoomPage() {
 										description={t("automaticDescription")}
 									/>
 								</div>
+								<HelpText className="text-xs">
+									{t("help.drawModeExplained")}
+								</HelpText>
 							</div>
 
 							{serverError && (
