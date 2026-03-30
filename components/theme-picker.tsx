@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils";
 const THEME_COLORS: Record<Theme, string[]> = {
 	default: ["oklch(0.65 0.18 70)", "oklch(0.93 0.015 80)", "oklch(0.55 0.22 27)"],
 	neon: ["#8C00FF", "#FF3F7F", "#FFC400"],
+	retro: ["#134686", "#ED3F27", "#FEB21A"],
+	ember: ["#9B0F06", "#D53E0E", "#EED9B9"],
 };
 
 export function ThemePicker() {
