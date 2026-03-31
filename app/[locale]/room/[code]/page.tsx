@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { api, BingoApiError } from "@/lib/api";
 import { useRoomSubscription } from "@/hooks/use-room-subscription";
 import type { RoomDTO } from "@/lib/types";
+import { PlayerNameForm } from "@/components/player-name-form";
 import { PageContainer } from "@/components/page-container";
 import { PageHeader, PageTitle, PageDescription } from "@/components/page-header";
 import { CurrentNumber } from "@/components/current-number";
@@ -31,6 +32,14 @@ export default function PlayerRoomPage() {
 	const { hideHelp } = useHelpVisible();
 	const prevDrawnCountRef = useRef(-1);
 	const [popupNumber, setPopupNumber] = useState<number | null>(null);
+	const [playerName, setPlayerName] = useState<string | null>(() => {
+		if (typeof window !== "undefined") {
+			return sessionStorage.getItem(`player-name:${params.code}`);
+		}
+		return null;
+	});
+	const [joinError, setJoinError] = useState<string | null>(null);
+	const [joining, setJoining] = useState(false);
 	const handleCorrection = useCallback(
 		(correction: import("@/lib/types").NumberCorrectionDTO) =>
 			toast.warning(t("correctionToast", { message: correction.message })),
@@ -65,13 +74,30 @@ export default function PlayerRoomPage() {
 		[tErrors],
 	);
 
-	const { room, connected, reconnecting } = useRoomSubscription({
+	const { room, connected, reconnecting, joinRoom } = useRoomSubscription({
 		sessionCode: params.code,
 		initialRoom: initialRoom ?? undefined,
 		onError: handleWsError,
 		onReconnect: handleReconnect,
 		onCorrection: handleCorrection,
 	});
+
+	const handlePlayerJoin = useCallback(
+		(name: string) => {
+			setJoining(true);
+			setJoinError(null);
+			try {
+				joinRoom(name);
+				sessionStorage.setItem(`player-name:${params.code}`, name);
+				setPlayerName(name);
+			} catch {
+				setJoinError(tErrors("generic"));
+			} finally {
+				setJoining(false);
+			}
+		},
+		[joinRoom, params.code, tErrors],
+	);
 
 	const displayRoom = room ?? initialRoom;
 
@@ -92,6 +118,19 @@ export default function PlayerRoomPage() {
 		}
 		prevDrawnCountRef.current = count;
 	}, [displayRoom, playSound, hideHelp]);
+
+	if (!playerName) {
+		return (
+			<PageContainer className="justify-center">
+				<PlayerNameForm
+					sessionCode={params.code}
+					onJoin={handlePlayerJoin}
+					error={joinError}
+					submitting={joining}
+				/>
+			</PageContainer>
+		);
+	}
 
 	if (loading) {
 		return (

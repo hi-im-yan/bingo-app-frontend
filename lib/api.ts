@@ -1,4 +1,4 @@
-import type { RoomDTO, CreateRoomForm, ApiError } from "@/lib/types";
+import type { RoomDTO, CreateRoomForm, ApiError, PlayerDTO } from "@/lib/types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
@@ -100,6 +100,12 @@ async function deleteRoom(sessionCode: string): Promise<void> {
 	removeCreatorHash(sessionCode);
 }
 
+async function getPlayers(sessionCode: string): Promise<PlayerDTO[]> {
+	return request<PlayerDTO[]>(`/api/v1/room/${sessionCode}/players`, {
+		sessionCode, // triggers X-Creator-Hash header
+	});
+}
+
 function getQrCodeUrl(sessionCode: string): string {
 	return `${BASE_URL}/api/v1/room/${sessionCode}/qrcode`;
 }
@@ -109,6 +115,7 @@ export const api = {
 	getRoom,
 	deleteRoom,
 	getQrCodeUrl,
+	getPlayers,
 };
 
 export {

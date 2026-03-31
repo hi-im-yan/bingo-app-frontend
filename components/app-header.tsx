@@ -14,7 +14,7 @@ export function AppHeader() {
 
 	return (
 		<header className="w-full border-b border-border/50" data-slot="app-header">
-			<div className="mx-auto flex max-w-lg items-center justify-between px-4 py-2 sm:px-6">
+			<div className="mx-auto flex max-w-lg items-center justify-between px-4 py-2 sm:px-6 lg:max-w-5xl">
 				{/* Left: Home link */}
 				<Link href="/" aria-label={t("home")} className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}>
 					<Home className="size-4" />

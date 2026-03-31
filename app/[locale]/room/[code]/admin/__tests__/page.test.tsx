@@ -19,6 +19,7 @@ const mockGetCreatorHash = vi.fn();
 vi.mock("@/lib/api", () => ({
 	api: {
 		getRoom: (...args: unknown[]) => mockGetRoom(...args),
+		getPlayers: vi.fn().mockResolvedValue([]),
 		getQrCodeUrl: (code: string) => `http://localhost:8080/api/v1/room/${code}/qrcode`,
 		deleteRoom: vi.fn().mockResolvedValue(undefined),
 	},

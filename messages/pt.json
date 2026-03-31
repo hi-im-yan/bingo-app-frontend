@@ -53,9 +53,12 @@
 	"joinRoom": {
 		"title": "Entrar na Sala",
 		"codePlaceholder": "Código da sala (6 caracteres)",
+		"nameLabel": "Seu nome",
+		"namePlaceholder": "Digite seu nome",
 		"joinButton": "Entrar",
 		"joining": "Entrando...",
 		"codeRequired": "Código da sala é obrigatório",
+		"nameTaken": "Este nome já está em uso",
 		"roomNotFound": "Sala não encontrada",
 		"help": {
 			"joinIntro": "Peça ao anfitrião o código de 6 caracteres da sala. Você também pode escanear o QR code se ele estiver exibido."
@@ -101,6 +104,9 @@
 		"correctOld": "Atual",
 		"correctNew": "Novo",
 		"correctionToast": "Número corrigido: {message}",
+		"players": "Jogadores",
+		"noPlayersYet": "Nenhum jogador ainda",
+		"playerJoined": "{name} entrou na sala",
 		"help": {
 			"adminIntro": "Você é o anfitrião. Os números sorteados são exibidos ao vivo para todos os jogadores nesta sala.",
 			"manualMode": "Clique em um número para sorteá-lo. Números já sorteados ficam desabilitados.",

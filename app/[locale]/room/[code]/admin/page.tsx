@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { api, BingoApiError, getCreatorHash } from "@/lib/api";
 import { useRoomSubscription } from "@/hooks/use-room-subscription";
-import type { RoomDTO } from "@/lib/types";
+import type { RoomDTO, PlayerDTO } from "@/lib/types";
 import { PageContainer } from "@/components/page-container";
 import { PageHeader, PageTitle, PageDescription } from "@/components/page-header";
 import { CurrentNumber } from "@/components/current-number";
@@ -20,6 +20,7 @@ import { useHelpVisible } from "@/hooks/use-help-visible";
 import { ManualDrawPanel } from "@/components/manual-draw-panel";
 import { AutomaticDrawPanel } from "@/components/automatic-draw-panel";
 import { ShareRoomSection } from "@/components/share-room-section";
+import { PlayerList } from "@/components/player-list";
 import { DeleteRoomButton } from "@/components/delete-room-button";
 import { CorrectNumberDialog } from "@/components/correct-number-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -30,6 +31,8 @@ export default function AdminPage() {
 	const t = useTranslations("admin");
 	const tErrors = useTranslations("errors");
 	const [initialRoom, setInitialRoom] = useState<RoomDTO | null>(null);
+	const [players, setPlayers] = useState<PlayerDTO[]>([]);
+	const [playersLoading, setPlayersLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const creatorHash = getCreatorHash(params.code);
@@ -47,8 +50,12 @@ export default function AdminPage() {
 
 		async function fetchRoom() {
 			try {
-				const room = await api.getRoom(params.code);
+				const [room, initialPlayers] = await Promise.all([
+					api.getRoom(params.code),
+					api.getPlayers(params.code).catch(() => [] as PlayerDTO[]),
+				]);
 				setInitialRoom(room);
+				setPlayers(initialPlayers);
 			} catch (err) {
 				if (err instanceof BingoApiError && err.status === 404) {
 					setError(tErrors("roomNotFound"));
@@ -57,6 +64,7 @@ export default function AdminPage() {
 				}
 			} finally {
 				setLoading(false);
+				setPlayersLoading(false);
 			}
 		}
 		fetchRoom();
@@ -78,12 +86,21 @@ export default function AdminPage() {
 		[t],
 	);
 
+	const handlePlayerJoin = useCallback(
+		(player: PlayerDTO) => {
+			setPlayers((prev) => [...prev, player]);
+			toast.info(t("playerJoined", { name: player.name }));
+		},
+		[t],
+	);
+
 	const { room, connected, reconnecting, addNumber, drawNumber, correctNumber } = useRoomSubscription({
 		sessionCode: params.code,
 		initialRoom: initialRoom ?? undefined,
 		onError: handleWsError,
 		onReconnect: handleReconnect,
 		onCorrection: handleCorrection,
+		onPlayerJoin: handlePlayerJoin,
 	});
 
 	const displayRoom = room ?? initialRoom;
@@ -160,7 +177,7 @@ export default function AdminPage() {
 	}
 
 	return (
-		<PageContainer>
+		<PageContainer className="lg:max-w-5xl">
 			<DrawPopup number={popupNumber} onDismiss={handlePopupDismiss} />
 			<ConnectionStatus connected={connected} reconnecting={reconnecting} />
 
@@ -175,53 +192,62 @@ export default function AdminPage() {
 				{t("help.adminIntro")}
 			</HelpText>
 
-			<div className="flex flex-col gap-6" onClick={enableSound}>
-				<div className="flex flex-col items-center gap-2">
-					<CurrentNumber number={lastDrawn} />
-					{displayRoom.drawMode === "MANUAL" && (
+			<div className="flex flex-col gap-6 lg:flex-row lg:items-start" onClick={enableSound}>
+				{/* Main column — draw controls + board */}
+				<div className="flex min-w-0 flex-1 flex-col gap-6">
+					<div className="flex flex-col items-center gap-2">
+						<CurrentNumber number={lastDrawn} />
+						{displayRoom.drawMode === "MANUAL" && (
+							<>
+								<CorrectNumberDialog
+									lastDrawn={lastDrawn}
+									drawnNumbers={displayRoom.drawnNumbers}
+									onCorrect={handleCorrectNumber}
+								/>
+								<HelpText className="text-xs">
+									{t("help.correction")}
+								</HelpText>
+							</>
+						)}
+					</div>
+					<LastDrawnNumbers drawnNumbers={displayRoom.drawnNumbers} />
+
+					{displayRoom.drawMode === "MANUAL" ? (
 						<>
-							<CorrectNumberDialog
-								lastDrawn={lastDrawn}
-								drawnNumbers={displayRoom.drawnNumbers}
-								onCorrect={handleCorrectNumber}
-							/>
 							<HelpText className="text-xs">
-								{t("help.correction")}
+								{t("help.manualMode")}
 							</HelpText>
+							<ManualDrawPanel
+								drawnNumbers={displayRoom.drawnNumbers}
+								onDrawNumber={handleAddNumber}
+							/>
+						</>
+					) : (
+						<>
+							<HelpText className="text-xs">
+								{t("help.automaticMode")}
+							</HelpText>
+							<AutomaticDrawPanel
+								allDrawn={allDrawn}
+								onDraw={handleDrawNumber}
+							/>
 						</>
 					)}
+
+					<DrawnNumbersBoard drawnNumbers={displayRoom.drawnNumbers} />
 				</div>
-				<LastDrawnNumbers drawnNumbers={displayRoom.drawnNumbers} />
 
-				{displayRoom.drawMode === "MANUAL" ? (
-					<>
-						<HelpText className="text-xs">
-							{t("help.manualMode")}
-						</HelpText>
-						<ManualDrawPanel
-							drawnNumbers={displayRoom.drawnNumbers}
-							onDrawNumber={handleAddNumber}
-						/>
-					</>
-				) : (
-					<>
-						<HelpText className="text-xs">
-							{t("help.automaticMode")}
-						</HelpText>
-						<AutomaticDrawPanel
-							allDrawn={allDrawn}
-							onDraw={handleDrawNumber}
-						/>
-					</>
-				)}
+				{/* Sidebar — share + players (stacked on mobile, right column on lg+) */}
+				<div className="flex flex-col gap-6 lg:sticky lg:top-4 lg:w-80 lg:shrink-0">
+					<HelpText className="text-xs">
+						{t("help.shareRoom")}
+					</HelpText>
+					<ShareRoomSection sessionCode={displayRoom.sessionCode} />
+					<PlayerList players={players} loading={playersLoading} />
+				</div>
+			</div>
 
-				<HelpText className="text-xs">
-					{t("help.shareRoom")}
-				</HelpText>
-				<ShareRoomSection sessionCode={displayRoom.sessionCode} />
-
-				<DrawnNumbersBoard drawnNumbers={displayRoom.drawnNumbers} />
-
+			<div className="mt-6">
 				<DeleteRoomButton sessionCode={displayRoom.sessionCode} />
 			</div>
 		</PageContainer>

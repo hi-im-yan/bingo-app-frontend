@@ -43,6 +43,16 @@ export interface NumberCorrectionDTO {
 	message: string;
 }
 
+export interface PlayerDTO {
+	name: string;
+	joinDateTime: string; // ISO datetime
+}
+
+export interface JoinRoomForm {
+	"session-code": string;
+	"player-name": string;
+}
+
 export interface ApiError {
 	status: number;
 	message: string;

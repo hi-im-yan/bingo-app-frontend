@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useRoomSubscription } from "../use-room-subscription";
-import type { RoomDTO, NumberCorrectionDTO } from "@/lib/types";
+import type { RoomDTO, NumberCorrectionDTO, PlayerDTO } from "@/lib/types";
 
 const mockSubscribe = vi.fn();
 const mockPublish = vi.fn();
@@ -186,5 +186,97 @@ describe("useRoomSubscription", () => {
 		});
 
 		expect(onCorrection).toHaveBeenCalledWith(correction);
+	});
+
+	it("publishes join-room with correct payload", () => {
+		const { result } = renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123" }),
+		);
+
+		act(() => {
+			result.current.joinRoom("Alice");
+		});
+
+		expect(mockPublish).toHaveBeenCalledWith(
+			"/app/join-room",
+			JSON.stringify({
+				"session-code": "ABC123",
+				"player-name": "Alice",
+			}),
+		);
+	});
+
+	it("subscribes to players topic when onPlayerJoin is provided", () => {
+		const onPlayerJoin = vi.fn();
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123", onPlayerJoin }),
+		);
+
+		expect(mockSubscribe).toHaveBeenCalledWith(
+			"/room/ABC123/players",
+			expect.any(Function),
+		);
+	});
+
+	it("does NOT subscribe to players topic when onPlayerJoin is omitted", () => {
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123" }),
+		);
+
+		const playersCalls = mockSubscribe.mock.calls.filter(
+			([dest]) => dest === "/room/ABC123/players",
+		);
+		expect(playersCalls).toHaveLength(0);
+	});
+
+	it("calls onPlayerJoin callback with parsed PlayerDTO", () => {
+		const onPlayerJoin = vi.fn();
+		let playersCallback: (msg: { body: string }) => void = () => {};
+
+		mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+			if (dest === "/room/ABC123/players") {
+				playersCallback = cb;
+			}
+			return vi.fn();
+		});
+
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123", onPlayerJoin }),
+		);
+
+		const player: PlayerDTO = {
+			name: "Alice",
+			joinDateTime: "2026-03-30T10:00:00Z",
+		};
+
+		act(() => {
+			playersCallback({ body: JSON.stringify(player) });
+		});
+
+		expect(onPlayerJoin).toHaveBeenCalledWith(player);
+	});
+
+	it("calls onError when players message fails to parse", () => {
+		const onPlayerJoin = vi.fn();
+		const onError = vi.fn();
+		let playersCallback: (msg: { body: string }) => void = () => {};
+
+		mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+			if (dest === "/room/ABC123/players") {
+				playersCallback = cb;
+			}
+			return vi.fn();
+		});
+
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123", onPlayerJoin, onError }),
+		);
+
+		act(() => {
+			playersCallback({ body: "not valid json {{" });
+		});
+
+		expect(onError).toHaveBeenCalledWith("Failed to parse player update");
+		expect(onPlayerJoin).not.toHaveBeenCalled();
 	});
 });

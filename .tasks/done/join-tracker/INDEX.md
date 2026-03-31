@@ -30,10 +30,10 @@ Receives `PlayerDTO` on each new join:
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 001 | Types + API + hook (PlayerDTO, JoinRoomForm, getPlayers, joinRoom, /players sub) | ready | — | Logic Writer |
-| 002 | Player name form (gate room view, zod validation, send join-room) | blocked | 001 | Component Builder |
-| 003 | Player list panel in admin (REST load + real-time updates) | blocked | 001 | Component Builder |
-| 004 | i18n translations (pt + en) | blocked | 002, 003 | Component Builder |
+| 001 | Types + API + hook (PlayerDTO, JoinRoomForm, getPlayers, joinRoom, /players sub) | done | — | Logic Writer |
+| 002 | Player name form (gate room view, zod validation, send join-room) | done | — | Component Builder |
+| 003 | Player list panel in admin (REST load + real-time updates) | done | — | Component Builder |
+| 004 | i18n translations (pt + en) | done | — | Component Builder |
 
 ## Decisions
 - Player name form gates the room view — must enter name before seeing the board

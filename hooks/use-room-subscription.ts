@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import type { RoomDTO, AddNumberForm, DrawNumberForm, CorrectNumberForm, NumberCorrectionDTO } from "@/lib/types";
+import type { RoomDTO, AddNumberForm, DrawNumberForm, CorrectNumberForm, NumberCorrectionDTO, PlayerDTO, JoinRoomForm } from "@/lib/types";
 import { useStompClient } from "./use-stomp-client";
 
 interface UseRoomSubscriptionOptions {
@@ -10,6 +10,7 @@ interface UseRoomSubscriptionOptions {
 	onError?: (error: string) => void;
 	onReconnect?: () => void;
 	onCorrection?: (correction: NumberCorrectionDTO) => void;
+	onPlayerJoin?: (player: PlayerDTO) => void;
 }
 
 interface UseRoomSubscriptionReturn {
@@ -19,6 +20,7 @@ interface UseRoomSubscriptionReturn {
 	addNumber: (creatorHash: string, number: number) => void;
 	drawNumber: (creatorHash: string) => void;
 	correctNumber: (creatorHash: string, newNumber: number) => void;
+	joinRoom: (playerName: string) => void;
 }
 
 export function useRoomSubscription({
@@ -27,6 +29,7 @@ export function useRoomSubscription({
 	onError,
 	onReconnect,
 	onCorrection,
+	onPlayerJoin,
 }: UseRoomSubscriptionOptions): UseRoomSubscriptionReturn {
 	const [room, setRoom] = useState<RoomDTO | null>(initialRoom ?? null);
 
@@ -104,5 +107,33 @@ export function useRoomSubscription({
 		};
 	}, [connected, sessionCode, subscribe, onCorrection, onError]);
 
-	return { room, connected, reconnecting, addNumber, drawNumber, correctNumber };
+	const joinRoom = useCallback(
+		(playerName: string) => {
+			const payload: JoinRoomForm = {
+				"session-code": sessionCode,
+				"player-name": playerName,
+			};
+			publish("/app/join-room", JSON.stringify(payload));
+		},
+		[sessionCode, publish],
+	);
+
+	useEffect(() => {
+		if (!connected || !sessionCode || !onPlayerJoin) return;
+
+		const unsubscribe = subscribe(`/room/${sessionCode}/players`, (message) => {
+			try {
+				const player: PlayerDTO = JSON.parse(message.body);
+				onPlayerJoin(player);
+			} catch {
+				onError?.("Failed to parse player update");
+			}
+		});
+
+		return () => {
+			unsubscribe?.();
+		};
+	}, [connected, sessionCode, subscribe, onPlayerJoin, onError]);
+
+	return { room, connected, reconnecting, addNumber, drawNumber, correctNumber, joinRoom };
 }
