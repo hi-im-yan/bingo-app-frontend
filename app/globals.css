@@ -492,15 +492,35 @@
 @keyframes tiebreak-card-reveal {
 	0% {
 		opacity: 0;
-		transform: scale(0.5) rotateY(90deg);
-	}
-	50% {
-		opacity: 1;
-		transform: scale(1.1) rotateY(-10deg);
+		transform: scale(0.3);
 	}
 	100% {
 		opacity: 1;
-		transform: scale(1) rotateY(0deg);
+		transform: scale(1);
+	}
+}
+
+@keyframes tiebreak-ball-spin {
+	0% {
+		opacity: 0;
+		transform: perspective(400px) scale(0.3) rotateY(0deg) rotateX(0deg);
+	}
+	20% {
+		opacity: 1;
+		transform: perspective(400px) scale(0.8) rotateY(360deg) rotateX(180deg);
+	}
+	50% {
+		transform: perspective(400px) scale(1.15) rotateY(720deg) rotateX(360deg);
+	}
+	70% {
+		transform: perspective(400px) scale(0.95) rotateY(900deg) rotateX(450deg);
+	}
+	85% {
+		transform: perspective(400px) scale(1.05) rotateY(1020deg) rotateX(520deg);
+	}
+	100% {
+		opacity: 1;
+		transform: perspective(400px) scale(1) rotateY(1080deg) rotateX(540deg);
 	}
 }
 

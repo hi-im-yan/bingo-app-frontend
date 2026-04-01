@@ -113,7 +113,7 @@ function SlotCard({ slot, draw, isWinner, isFinished, isClickable, onClick }: Sl
 				isWinner
 					? { animation: "tiebreak-winner-glow 1.5s ease-in-out infinite alternate" }
 					: hasDrawn
-						? { animation: "tiebreak-card-reveal 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards" }
+						? { animation: "tiebreak-card-reveal 400ms ease-out forwards" }
 						: undefined
 			}
 		>
@@ -122,7 +122,13 @@ function SlotCard({ slot, draw, isWinner, isFinished, isClickable, onClick }: Sl
 			</span>
 
 			{hasDrawn ? (
-				<div className="flex size-14 items-center justify-center rounded-full bg-ball-drawn shadow-md">
+				<div
+					className="flex size-14 items-center justify-center rounded-full bg-ball-drawn shadow-md"
+					style={{
+						animation: "tiebreak-ball-spin 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+						transformStyle: "preserve-3d",
+					}}
+				>
 					<span className="text-xl font-black tabular-nums text-ball-drawn-foreground">
 						{draw.label}
 					</span>
