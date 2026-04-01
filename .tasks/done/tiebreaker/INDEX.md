@@ -34,11 +34,11 @@ When multiple players get BINGO simultaneously in automatic rooms, the admin can
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| F01 | Types + hook (TiebreakDTO, forms, WS send/subscribe) | done | — | Logic Writer |
-| F02 | Tiebreaker overlay component (draws display + winner animation) | done | — | Component Builder |
-| F03 | Admin tiebreaker panel (start button, slot draw buttons) | done | — | Component Builder |
-| F04 | Wire overlay into player + admin pages | done | — | Component Builder |
-| F05 | i18n translations (pt + en) | done | — | Component Builder |
+| 01 | Types + hook (TiebreakDTO, forms, WS send/subscribe) | done | — | Logic Writer |
+| 02 | Tiebreaker overlay component (draws display + winner animation) | done | — | Component Builder |
+| 03 | Admin tiebreaker panel (start button, slot draw buttons) | done | — | Component Builder |
+| 04 | Wire overlay into player + admin pages | done | — | Component Builder |
+| 05 | i18n translations (pt + en) | done | — | Component Builder |
 
 ## Decisions
 - Tiebreaker button only in AUTOMATIC rooms

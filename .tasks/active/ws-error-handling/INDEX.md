@@ -17,11 +17,11 @@ When the backend returns an error — whether via REST (HTTP 500, 4xx) or WebSoc
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| F01 | Investigate backend WS error handling pattern | ready | — | — |
-| F02 | Audit REST error handling in api.ts and page-level catch blocks | ready | — | — |
-| F03 | Subscribe to WS error channel in useStompClient or useRoomSubscription | blocked | F01 | — |
-| F04 | Add global/consistent REST error toast for unhandled 5xx/4xx | blocked | F02 | — |
-| F05 | Surface errors as toasts + reset pending UI state | blocked | F03, F04 | — |
+| 01| Investigate backend WS error handling pattern | ready | — | — |
+| 02| Audit REST error handling in api.ts and page-level catch blocks | ready | — | — |
+| 03| Subscribe to WS error channel in useStompClient or useRoomSubscription | blocked | 01| — |
+| 04| Add global/consistent REST error toast for unhandled 5xx/4xx | blocked | 02| — |
+| 05| Surface errors as toasts + reset pending UI state | blocked | 03, 04 | — |
 
 ## Scope
 
