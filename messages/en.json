@@ -124,7 +124,8 @@
 		"startTiebreaker": "Start Tiebreaker",
 		"playerCount": "Players",
 		"drawSlot": "Draw {slot}",
-		"alreadyDrawn": "Already drawn"
+		"alreadyDrawn": "Already drawn",
+		"tapToDraw": "Tap to draw"
 	},
 	"errors": {
 		"connectionLost": "Connection lost",

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import messages from "@/messages/en.json";
 import { TiebreakOverlay } from "../tiebreak-overlay";
@@ -34,6 +35,17 @@ describe("TiebreakOverlay", () => {
 			renderOverlay(tiebreak);
 			expect(screen.getByText("Tiebreaker")).toBeInTheDocument();
 		});
+
+		it("overlay is scrollable", () => {
+			const tiebreak: TiebreakDTO = {
+				status: "STARTED",
+				playerCount: 3,
+				draws: [],
+			};
+			renderOverlay(tiebreak);
+			const dialog = screen.getByRole("dialog");
+			expect(dialog.className).toContain("overflow-y-auto");
+		});
 	});
 
 	describe("slots", () => {
@@ -50,7 +62,7 @@ describe("TiebreakOverlay", () => {
 			expect(screen.getByText("Draw 4")).toBeInTheDocument();
 		});
 
-		it("shows 'Waiting...' for undrawn slots", () => {
+		it("shows 'Waiting...' for undrawn slots in player view", () => {
 			const tiebreak: TiebreakDTO = {
 				status: "STARTED",
 				playerCount: 2,
@@ -61,6 +73,17 @@ describe("TiebreakOverlay", () => {
 			expect(waitingElements).toHaveLength(2);
 		});
 
+		it("shows 'Tap to draw' for undrawn slots in admin view", () => {
+			const tiebreak: TiebreakDTO = {
+				status: "STARTED",
+				playerCount: 2,
+				draws: [],
+			};
+			renderOverlay(tiebreak, undefined, vi.fn());
+			const tapElements = screen.getAllByText("Tap to draw");
+			expect(tapElements).toHaveLength(2);
+		});
+
 		it("shows the drawn number for completed slots", () => {
 			const tiebreak: TiebreakDTO = {
 				status: "IN_PROGRESS",
@@ -69,7 +92,6 @@ describe("TiebreakOverlay", () => {
 			};
 			renderOverlay(tiebreak);
 			expect(screen.getByText("N-42")).toBeInTheDocument();
-			// remaining slots still waiting
 			const waitingElements = screen.getAllByText("Waiting...");
 			expect(waitingElements).toHaveLength(2);
 		});
@@ -150,7 +172,6 @@ describe("TiebreakOverlay", () => {
 		});
 
 		it("calls onClose when close button is clicked", async () => {
-			const { userEvent } = await import("@testing-library/user-event");
 			const user = userEvent.setup();
 			const onClose = vi.fn();
 			const tiebreak: TiebreakDTO = {
@@ -168,31 +189,33 @@ describe("TiebreakOverlay", () => {
 		});
 	});
 
-	describe("admin draw buttons", () => {
-		it("renders draw buttons when onDrawSlot is provided", () => {
+	describe("admin click-to-draw", () => {
+		it("slot cards are clickable when onDrawSlot is provided", () => {
 			const tiebreak: TiebreakDTO = {
 				status: "STARTED",
 				playerCount: 3,
 				draws: [],
 			};
 			renderOverlay(tiebreak, undefined, vi.fn());
-			expect(screen.getByRole("button", { name: "Draw 1" })).toBeInTheDocument();
-			expect(screen.getByRole("button", { name: "Draw 2" })).toBeInTheDocument();
-			expect(screen.getByRole("button", { name: "Draw 3" })).toBeInTheDocument();
+			const buttons = screen.getAllByRole("button");
+			const slotButtons = buttons.filter((b) => b.textContent?.includes("Draw"));
+			expect(slotButtons).toHaveLength(3);
+			slotButtons.forEach((b) => expect(b).toBeEnabled());
 		});
 
-		it("does not render draw buttons when onDrawSlot is omitted", () => {
+		it("slot cards are disabled when onDrawSlot is omitted (player view)", () => {
 			const tiebreak: TiebreakDTO = {
 				status: "STARTED",
 				playerCount: 2,
 				draws: [],
 			};
 			renderOverlay(tiebreak);
-			expect(screen.queryByRole("button", { name: "Draw 1" })).not.toBeInTheDocument();
+			const buttons = screen.getAllByRole("button");
+			const slotButtons = buttons.filter((b) => b.textContent?.includes("Draw"));
+			slotButtons.forEach((b) => expect(b).toBeDisabled());
 		});
 
-		it("calls onDrawSlot with correct slot", async () => {
-			const { default: userEvent } = await import("@testing-library/user-event");
+		it("calls onDrawSlot with correct slot when card is clicked", async () => {
 			const user = userEvent.setup();
 			const onDrawSlot = vi.fn();
 			const tiebreak: TiebreakDTO = {
@@ -201,22 +224,27 @@ describe("TiebreakOverlay", () => {
 				draws: [],
 			};
 			renderOverlay(tiebreak, undefined, onDrawSlot);
-			await user.click(screen.getByRole("button", { name: "Draw 2" }));
+			const buttons = screen.getAllByRole("button");
+			const draw2 = buttons.find((b) => b.textContent?.includes("Draw 2"));
+			await user.click(draw2!);
 			expect(onDrawSlot).toHaveBeenCalledWith(2);
 		});
 
-		it("disables buttons for already-drawn slots", () => {
+		it("disables cards for already-drawn slots", () => {
 			const tiebreak: TiebreakDTO = {
 				status: "IN_PROGRESS",
 				playerCount: 3,
 				draws: [{ slot: 1, number: 42, label: "N-42" }],
 			};
 			renderOverlay(tiebreak, undefined, vi.fn());
-			expect(screen.getByRole("button", { name: "Draw 1" })).toBeDisabled();
-			expect(screen.getByRole("button", { name: "Draw 2" })).toBeEnabled();
+			const buttons = screen.getAllByRole("button");
+			const draw1 = buttons.find((b) => b.textContent?.includes("Draw 1"));
+			const draw2 = buttons.find((b) => b.textContent?.includes("Draw 2"));
+			expect(draw1).toBeDisabled();
+			expect(draw2).toBeEnabled();
 		});
 
-		it("hides draw buttons when finished", () => {
+		it("disables all cards when finished", () => {
 			const tiebreak: TiebreakDTO = {
 				status: "FINISHED",
 				playerCount: 2,
@@ -227,8 +255,9 @@ describe("TiebreakOverlay", () => {
 				winnerSlot: 2,
 			};
 			renderOverlay(tiebreak, undefined, vi.fn());
-			expect(screen.queryByRole("button", { name: "Draw 1" })).not.toBeInTheDocument();
-			expect(screen.queryByRole("button", { name: "Draw 2" })).not.toBeInTheDocument();
+			const buttons = screen.getAllByRole("button");
+			const slotButtons = buttons.filter((b) => b.textContent?.includes("Draw"));
+			slotButtons.forEach((b) => expect(b).toBeDisabled());
 		});
 	});
 

@@ -124,7 +124,8 @@
 		"startTiebreaker": "Iniciar Desempate",
 		"playerCount": "Jogadores",
 		"drawSlot": "Sorteio {slot}",
-		"alreadyDrawn": "Já sorteado"
+		"alreadyDrawn": "Já sorteado",
+		"tapToDraw": "Toque para sortear"
 	},
 	"errors": {
 		"connectionLost": "Conexão perdida",

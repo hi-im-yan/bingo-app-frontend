@@ -25,17 +25,17 @@ export function TiebreakOverlay({ tiebreak, onClose, onDrawSlot }: TiebreakOverl
 		<div
 			role="dialog"
 			aria-label={t("title")}
-			className="fixed inset-0 z-[70] flex items-center justify-center"
+			className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto"
 		>
 			{/* Backdrop */}
 			<div
-				className="absolute inset-0 bg-black/60 backdrop-blur-xs"
+				className="fixed inset-0 bg-black/60 backdrop-blur-xs"
 				style={{ animation: "popup-backdrop-in 300ms ease-out forwards" }}
 			/>
 
 			{/* Content */}
 			<div
-				className="relative z-10 mx-4 flex w-full max-w-lg flex-col items-center gap-6 rounded-2xl bg-card p-6 shadow-2xl sm:p-8"
+				className="relative z-10 mx-4 my-8 flex w-full max-w-lg flex-col items-center gap-6 rounded-2xl bg-card p-6 shadow-2xl sm:p-8"
 				style={{ animation: "tiebreak-slide-up 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards" }}
 			>
 				<h2 className="text-2xl font-bold text-foreground">{t("title")}</h2>
@@ -46,6 +46,8 @@ export function TiebreakOverlay({ tiebreak, onClose, onDrawSlot }: TiebreakOverl
 						const slot = i + 1;
 						const draw = draws.find((d) => d.slot === slot);
 						const isWinner = winnerSlot === slot;
+						const isDrawn = drawnSlots.has(slot);
+						const isClickable = !!onDrawSlot && !isDrawn && !isFinished;
 						return (
 							<SlotCard
 								key={slot}
@@ -53,31 +55,12 @@ export function TiebreakOverlay({ tiebreak, onClose, onDrawSlot }: TiebreakOverl
 								draw={draw}
 								isWinner={isWinner}
 								isFinished={isFinished}
+								isClickable={isClickable}
+								onClick={isClickable ? () => onDrawSlot(slot) : undefined}
 							/>
 						);
 					})}
 				</div>
-
-				{/* Admin draw buttons — inside the overlay so admin can interact */}
-				{onDrawSlot && !isFinished && (
-					<div className="flex w-full flex-wrap justify-center gap-2">
-						{Array.from({ length: playerCount }, (_, i) => {
-							const slot = i + 1;
-							const isDrawn = drawnSlots.has(slot);
-							return (
-								<Button
-									key={slot}
-									variant={isDrawn ? "outline" : "default"}
-									size="sm"
-									disabled={isDrawn}
-									onClick={() => onDrawSlot(slot)}
-								>
-									{t("drawSlot", { slot })}
-								</Button>
-							);
-						})}
-					</div>
-				)}
 
 				{/* Close button — only when finished */}
 				{isFinished && onClose && (
@@ -102,19 +85,30 @@ interface SlotCardProps {
 	draw?: TiebreakDrawEntry;
 	isWinner: boolean;
 	isFinished: boolean;
+	isClickable: boolean;
+	onClick?: () => void;
 }
 
-function SlotCard({ slot, draw, isWinner, isFinished }: SlotCardProps) {
+function SlotCard({ slot, draw, isWinner, isFinished, isClickable, onClick }: SlotCardProps) {
 	const t = useTranslations("tiebreaker");
 	const hasDrawn = !!draw;
 
 	return (
-		<div
+		<button
+			type="button"
+			disabled={!isClickable}
+			onClick={onClick}
 			className={`flex flex-col items-center gap-2 rounded-xl border p-4 transition-all ${
 				isWinner
 					? "border-primary bg-primary/10 shadow-lg"
 					: "border-border bg-card"
-			} ${isFinished && !isWinner ? "opacity-50" : ""}`}
+			} ${isFinished && !isWinner ? "opacity-50" : ""} ${
+				isClickable
+					? "cursor-pointer hover:border-primary hover:bg-primary/5 active:scale-95"
+					: hasDrawn
+						? "cursor-default"
+						: "cursor-default"
+			}`}
 			style={
 				isWinner
 					? { animation: "tiebreak-winner-glow 1.5s ease-in-out infinite alternate" }
@@ -135,13 +129,15 @@ function SlotCard({ slot, draw, isWinner, isFinished }: SlotCardProps) {
 				</div>
 			) : (
 				<div className="flex size-14 items-center justify-center rounded-full bg-muted">
-					<span className="text-xs text-muted-foreground">{t("waiting")}</span>
+					<span className="text-xs text-muted-foreground">
+						{isClickable ? t("tapToDraw") : t("waiting")}
+					</span>
 				</div>
 			)}
 
 			{isWinner && (
 				<span className="text-sm font-bold text-primary">{t("winner")}</span>
 			)}
-		</div>
+		</button>
 	);
 }
