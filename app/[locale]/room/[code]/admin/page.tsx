@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { api, BingoApiError, getCreatorHash } from "@/lib/api";
 import { useRoomSubscription } from "@/hooks/use-room-subscription";
-import type { RoomDTO, PlayerDTO } from "@/lib/types";
+import type { RoomDTO, PlayerDTO, TiebreakDTO } from "@/lib/types";
 import { PageContainer } from "@/components/page-container";
 import { PageHeader, PageTitle, PageDescription } from "@/components/page-header";
 import { CurrentNumber } from "@/components/current-number";
@@ -24,6 +24,8 @@ import { PlayerList } from "@/components/player-list";
 import { DeleteRoomButton } from "@/components/delete-room-button";
 import { CorrectNumberDialog } from "@/components/correct-number-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AdminTiebreakPanel } from "@/components/admin-tiebreak-panel";
+import { TiebreakOverlay } from "@/components/tiebreak-overlay";
 import { TOTAL_NUMBERS } from "@/lib/constants";
 
 export default function AdminPage() {
@@ -40,6 +42,7 @@ export default function AdminPage() {
 	const { hideHelp } = useHelpVisible();
 	const prevDrawnCountRef = useRef(-1);
 	const [popupNumber, setPopupNumber] = useState<number | null>(null);
+	const [tiebreak, setTiebreak] = useState<TiebreakDTO | null>(null);
 
 	useEffect(() => {
 		if (!creatorHash) {
@@ -94,13 +97,19 @@ export default function AdminPage() {
 		[t],
 	);
 
-	const { room, connected, reconnecting, addNumber, drawNumber, correctNumber } = useRoomSubscription({
+	const handleTiebreakUpdate = useCallback(
+		(update: TiebreakDTO) => setTiebreak(update),
+		[],
+	);
+
+	const { room, connected, reconnecting, addNumber, drawNumber, correctNumber, startTiebreak, tiebreakDraw } = useRoomSubscription({
 		sessionCode: params.code,
 		initialRoom: initialRoom ?? undefined,
 		onError: handleWsError,
 		onReconnect: handleReconnect,
 		onCorrection: handleCorrection,
 		onPlayerJoin: handlePlayerJoin,
+		onTiebreakUpdate: handleTiebreakUpdate,
 	});
 
 	const displayRoom = room ?? initialRoom;
@@ -176,9 +185,28 @@ export default function AdminPage() {
 		}
 	}
 
+	function handleStartTiebreak(playerCount: number) {
+		if (creatorHash) {
+			startTiebreak(creatorHash, playerCount);
+		}
+	}
+
+	function handleTiebreakDraw(slot: number) {
+		if (creatorHash) {
+			tiebreakDraw(creatorHash, slot);
+		}
+	}
+
+	function handleTiebreakClose() {
+		setTiebreak(null);
+	}
+
 	return (
 		<PageContainer className="lg:max-w-5xl">
 			<DrawPopup number={popupNumber} onDismiss={handlePopupDismiss} />
+			{tiebreak && (
+				<TiebreakOverlay tiebreak={tiebreak} onClose={handleTiebreakClose} />
+			)}
 			<ConnectionStatus connected={connected} reconnecting={reconnecting} />
 
 			<PageHeader>
@@ -230,6 +258,11 @@ export default function AdminPage() {
 							<AutomaticDrawPanel
 								allDrawn={allDrawn}
 								onDraw={handleDrawNumber}
+							/>
+							<AdminTiebreakPanel
+								tiebreak={tiebreak}
+								onStart={handleStartTiebreak}
+								onDrawSlot={handleTiebreakDraw}
 							/>
 						</>
 					)}

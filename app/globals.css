@@ -476,3 +476,41 @@
 	0% { opacity: 1; }
 	100% { opacity: 0; }
 }
+
+/* Tiebreaker overlay animations */
+@keyframes tiebreak-slide-up {
+	0% {
+		opacity: 0;
+		transform: translateY(40px) scale(0.95);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+@keyframes tiebreak-card-reveal {
+	0% {
+		opacity: 0;
+		transform: scale(0.5) rotateY(90deg);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1.1) rotateY(-10deg);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1) rotateY(0deg);
+	}
+}
+
+@keyframes tiebreak-winner-glow {
+	0% {
+		box-shadow: 0 0 8px var(--primary);
+		transform: scale(1);
+	}
+	100% {
+		box-shadow: 0 0 24px var(--primary), 0 0 48px var(--primary);
+		transform: scale(1.05);
+	}
+}
