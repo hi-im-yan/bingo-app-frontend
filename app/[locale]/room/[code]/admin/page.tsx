@@ -43,6 +43,7 @@ export default function AdminPage() {
 	const prevDrawnCountRef = useRef(-1);
 	const [popupNumber, setPopupNumber] = useState<number | null>(null);
 	const [tiebreak, setTiebreak] = useState<TiebreakDTO | null>(null);
+	const tiebreakPendingRef = useRef(false);
 
 	useEffect(() => {
 		if (!creatorHash) {
@@ -74,7 +75,13 @@ export default function AdminPage() {
 	}, [params.code, creatorHash, tErrors]);
 
 	const handleWsError = useCallback(
-		(error: string) => toast.error(error),
+		(error: string) => {
+			toast.error(error);
+			if (tiebreakPendingRef.current) {
+				tiebreakPendingRef.current = false;
+				setTiebreak(null);
+			}
+		},
 		[],
 	);
 
@@ -98,7 +105,10 @@ export default function AdminPage() {
 	);
 
 	const handleTiebreakUpdate = useCallback(
-		(update: TiebreakDTO) => setTiebreak(update),
+		(update: TiebreakDTO) => {
+			tiebreakPendingRef.current = false;
+			setTiebreak(update);
+		},
 		[],
 	);
 
@@ -187,12 +197,14 @@ export default function AdminPage() {
 
 	function handleStartTiebreak(playerCount: number) {
 		if (creatorHash) {
+			tiebreakPendingRef.current = true;
 			startTiebreak(creatorHash, playerCount);
 		}
 	}
 
 	function handleTiebreakDraw(slot: number) {
 		if (creatorHash) {
+			tiebreakPendingRef.current = true;
 			tiebreakDraw(creatorHash, slot);
 		}
 	}
