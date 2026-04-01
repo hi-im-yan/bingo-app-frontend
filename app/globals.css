@@ -500,61 +500,31 @@
 	}
 }
 
-/* 3D ball spin — highlight sweeps across surface to simulate rotation */
 @keyframes tiebreak-ball-spin {
 	0% {
 		opacity: 0;
-		transform: scale(0.2) rotate(-30deg);
-		background-position: 30% 25%;
-		box-shadow:
-			inset -4px -4px 12px rgba(0, 0, 0, 0.5),
-			inset 2px 2px 6px rgba(255, 255, 255, 0.15),
-			0 4px 16px rgba(0, 0, 0, 0.3);
+		transform: perspective(400px) scale(0.2) rotateY(0deg) rotateX(0deg);
 	}
-	15% {
+	10% {
 		opacity: 1;
-		transform: scale(0.7) rotate(0deg);
-		background-position: 70% 20%;
+		transform: perspective(400px) scale(0.5) rotateY(180deg) rotateX(90deg);
 	}
-	30% {
-		transform: scale(0.9) rotate(8deg);
-		background-position: 80% 60%;
-		box-shadow:
-			inset -6px -6px 16px rgba(0, 0, 0, 0.5),
-			inset 3px 3px 8px rgba(255, 255, 255, 0.2),
-			0 8px 24px rgba(0, 0, 0, 0.35);
+	35% {
+		transform: perspective(400px) scale(0.9) rotateY(720deg) rotateX(360deg);
 	}
-	50% {
-		transform: scale(1.15) rotate(-5deg);
-		background-position: 25% 75%;
+	60% {
+		transform: perspective(400px) scale(1.15) rotateY(1260deg) rotateX(540deg);
 	}
-	65% {
-		transform: scale(1.05) rotate(3deg);
-		background-position: 60% 30%;
+	78% {
+		transform: perspective(400px) scale(0.95) rotateY(1620deg) rotateX(720deg);
 	}
-	80% {
-		transform: scale(0.95) rotate(-2deg);
-		background-position: 40% 20%;
-	}
-	92% {
-		transform: scale(1.03) rotate(1deg);
-		background-position: 33% 28%;
+	90% {
+		transform: perspective(400px) scale(1.05) rotateY(1760deg) rotateX(720deg);
 	}
 	100% {
 		opacity: 1;
-		transform: scale(1) rotate(0deg);
-		background-position: 35% 30%;
-		box-shadow:
-			inset -6px -6px 16px rgba(0, 0, 0, 0.4),
-			inset 3px 3px 8px rgba(255, 255, 255, 0.2),
-			0 6px 20px rgba(0, 0, 0, 0.25);
+		transform: perspective(400px) scale(1) rotateY(1800deg) rotateX(720deg);
 	}
-}
-
-/* Text fades in after ball settles */
-@keyframes tiebreak-label-in {
-	0% { opacity: 0; transform: scale(0.5); }
-	100% { opacity: 1; transform: scale(1); }
 }
 
 @keyframes tiebreak-winner-glow {
