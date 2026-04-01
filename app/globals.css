@@ -503,24 +503,27 @@
 @keyframes tiebreak-ball-spin {
 	0% {
 		opacity: 0;
-		transform: perspective(400px) scale(0.3) rotateY(0deg) rotateX(0deg);
+		transform: perspective(400px) scale(0.2) rotateY(0deg) rotateX(0deg);
 	}
-	20% {
+	10% {
 		opacity: 1;
-		transform: perspective(400px) scale(0.8) rotateY(360deg) rotateX(180deg);
+		transform: perspective(400px) scale(0.5) rotateY(180deg) rotateX(90deg);
 	}
-	50% {
-		transform: perspective(400px) scale(1.15) rotateY(720deg) rotateX(360deg);
+	35% {
+		transform: perspective(400px) scale(0.9) rotateY(720deg) rotateX(360deg);
 	}
-	70% {
-		transform: perspective(400px) scale(0.95) rotateY(900deg) rotateX(450deg);
+	60% {
+		transform: perspective(400px) scale(1.15) rotateY(1260deg) rotateX(540deg);
 	}
-	85% {
-		transform: perspective(400px) scale(1.05) rotateY(1020deg) rotateX(520deg);
+	78% {
+		transform: perspective(400px) scale(0.95) rotateY(1620deg) rotateX(720deg);
+	}
+	90% {
+		transform: perspective(400px) scale(1.05) rotateY(1760deg) rotateX(720deg);
 	}
 	100% {
 		opacity: 1;
-		transform: perspective(400px) scale(1) rotateY(1080deg) rotateX(540deg);
+		transform: perspective(400px) scale(1) rotateY(1800deg) rotateX(720deg);
 	}
 }
 

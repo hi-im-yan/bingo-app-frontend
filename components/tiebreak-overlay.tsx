@@ -125,7 +125,7 @@ function SlotCard({ slot, draw, isWinner, isFinished, isClickable, onClick }: Sl
 				<div
 					className="flex size-14 items-center justify-center rounded-full bg-ball-drawn shadow-md"
 					style={{
-						animation: "tiebreak-ball-spin 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+						animation: "tiebreak-ball-spin 2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
 						transformStyle: "preserve-3d",
 					}}
 				>
