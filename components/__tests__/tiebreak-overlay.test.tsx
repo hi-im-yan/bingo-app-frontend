@@ -36,7 +36,7 @@ describe("TiebreakOverlay", () => {
 			expect(screen.getByText("Tiebreaker")).toBeInTheDocument();
 		});
 
-		it("overlay is scrollable", () => {
+		it("overlay is scrollable and top-aligned", () => {
 			const tiebreak: TiebreakDTO = {
 				status: "STARTED",
 				playerCount: 3,
@@ -45,6 +45,7 @@ describe("TiebreakOverlay", () => {
 			renderOverlay(tiebreak);
 			const dialog = screen.getByRole("dialog");
 			expect(dialog.className).toContain("overflow-y-auto");
+			expect(dialog.className).not.toContain("items-center");
 		});
 	});
 

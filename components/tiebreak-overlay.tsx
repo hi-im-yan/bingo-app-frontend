@@ -25,7 +25,7 @@ export function TiebreakOverlay({ tiebreak, onClose, onDrawSlot }: TiebreakOverl
 		<div
 			role="dialog"
 			aria-label={t("title")}
-			className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto"
+			className="fixed inset-0 z-[70] flex justify-center overflow-y-auto py-8"
 		>
 			{/* Backdrop */}
 			<div
@@ -35,7 +35,7 @@ export function TiebreakOverlay({ tiebreak, onClose, onDrawSlot }: TiebreakOverl
 
 			{/* Content */}
 			<div
-				className="relative z-10 mx-4 my-8 flex w-full max-w-lg flex-col items-center gap-6 rounded-2xl bg-card p-6 shadow-2xl sm:p-8"
+				className="relative z-10 mx-4 flex h-fit w-full max-w-lg flex-col items-center gap-6 rounded-2xl bg-card p-6 shadow-2xl sm:p-8"
 				style={{ animation: "tiebreak-slide-up 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards" }}
 			>
 				<h2 className="text-2xl font-bold text-foreground">{t("title")}</h2>
