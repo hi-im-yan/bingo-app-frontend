@@ -45,5 +45,6 @@ When multiple players get BINGO simultaneously in automatic rooms, the admin can
 - Numbered slots (Draw 1, Draw 2...) instead of player names — supports shared devices
 - Player count range: 2–6
 - No ties within tiebreaker — all numbers are unique
+- Player count: minimum 2, no upper limit
 - Numbers are ephemeral — not added to drawnNumbers, returned to pool after tiebreaker
 - Backend owns random draw logic — frontend just sends commands
