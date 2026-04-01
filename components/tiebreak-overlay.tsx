@@ -123,13 +123,19 @@ function SlotCard({ slot, draw, isWinner, isFinished, isClickable, onClick }: Sl
 
 			{hasDrawn ? (
 				<div
-					className="flex size-14 items-center justify-center rounded-full bg-ball-drawn shadow-md"
+					className="flex size-14 items-center justify-center rounded-full"
 					style={{
-						animation: "tiebreak-ball-spin 2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
-						transformStyle: "preserve-3d",
+						background: "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.45) 0%, var(--ball-drawn) 45%, rgba(0,0,0,0.3) 100%)",
+						backgroundSize: "200% 200%",
+						animation: "tiebreak-ball-spin 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
 					}}
 				>
-					<span className="text-xl font-black tabular-nums text-ball-drawn-foreground">
+					<span
+						className="text-xl font-black tabular-nums text-ball-drawn-foreground"
+						style={{
+							animation: "tiebreak-label-in 400ms ease-out 1.2s both",
+						}}
+					>
 						{draw.label}
 					</span>
 				</div>
