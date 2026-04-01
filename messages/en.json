@@ -115,6 +115,17 @@
 			"shareRoom": "Share the room code or QR code with your players so they can follow along."
 		}
 	},
+	"tiebreaker": {
+		"title": "Tiebreaker",
+		"slotLabel": "Draw {slot}",
+		"waiting": "Waiting...",
+		"winner": "Winner!",
+		"winnerAnnouncement": "Draw {slot} wins with {label}!",
+		"startTiebreaker": "Start Tiebreaker",
+		"playerCount": "Players",
+		"drawSlot": "Draw {slot}",
+		"alreadyDrawn": "Already drawn"
+	},
 	"errors": {
 		"connectionLost": "Connection lost",
 		"reconnecting": "Reconnecting...",

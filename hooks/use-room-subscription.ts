@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import type { RoomDTO, AddNumberForm, DrawNumberForm, CorrectNumberForm, NumberCorrectionDTO, PlayerDTO, JoinRoomForm } from "@/lib/types";
+import type { RoomDTO, AddNumberForm, DrawNumberForm, CorrectNumberForm, NumberCorrectionDTO, PlayerDTO, JoinRoomForm, TiebreakDTO, StartTiebreakForm, TiebreakDrawForm } from "@/lib/types";
 import { useStompClient } from "./use-stomp-client";
 
 interface UseRoomSubscriptionOptions {
@@ -11,6 +11,7 @@ interface UseRoomSubscriptionOptions {
 	onReconnect?: () => void;
 	onCorrection?: (correction: NumberCorrectionDTO) => void;
 	onPlayerJoin?: (player: PlayerDTO) => void;
+	onTiebreakUpdate?: (tiebreak: TiebreakDTO) => void;
 }
 
 interface UseRoomSubscriptionReturn {
@@ -21,6 +22,8 @@ interface UseRoomSubscriptionReturn {
 	drawNumber: (creatorHash: string) => void;
 	correctNumber: (creatorHash: string, newNumber: number) => void;
 	joinRoom: (playerName: string) => void;
+	startTiebreak: (creatorHash: string, playerCount: number) => void;
+	tiebreakDraw: (creatorHash: string, slot: number) => void;
 }
 
 export function useRoomSubscription({
@@ -30,6 +33,7 @@ export function useRoomSubscription({
 	onReconnect,
 	onCorrection,
 	onPlayerJoin,
+	onTiebreakUpdate,
 }: UseRoomSubscriptionOptions): UseRoomSubscriptionReturn {
 	const [room, setRoom] = useState<RoomDTO | null>(initialRoom ?? null);
 
@@ -135,5 +139,46 @@ export function useRoomSubscription({
 		};
 	}, [connected, sessionCode, subscribe, onPlayerJoin, onError]);
 
-	return { room, connected, reconnecting, addNumber, drawNumber, correctNumber, joinRoom };
+	const startTiebreak = useCallback(
+		(creatorHash: string, playerCount: number) => {
+			const payload: StartTiebreakForm = {
+				"session-code": sessionCode,
+				"creator-hash": creatorHash,
+				"player-count": playerCount,
+			};
+			publish("/app/start-tiebreak", JSON.stringify(payload));
+		},
+		[sessionCode, publish],
+	);
+
+	const tiebreakDraw = useCallback(
+		(creatorHash: string, slot: number) => {
+			const payload: TiebreakDrawForm = {
+				"session-code": sessionCode,
+				"creator-hash": creatorHash,
+				slot,
+			};
+			publish("/app/tiebreak-draw", JSON.stringify(payload));
+		},
+		[sessionCode, publish],
+	);
+
+	useEffect(() => {
+		if (!connected || !sessionCode || !onTiebreakUpdate) return;
+
+		const unsubscribe = subscribe(`/room/${sessionCode}/tiebreak`, (message) => {
+			try {
+				const tiebreak: TiebreakDTO = JSON.parse(message.body);
+				onTiebreakUpdate(tiebreak);
+			} catch {
+				onError?.("Failed to parse tiebreak update");
+			}
+		});
+
+		return () => {
+			unsubscribe?.();
+		};
+	}, [connected, sessionCode, subscribe, onTiebreakUpdate, onError]);
+
+	return { room, connected, reconnecting, addNumber, drawNumber, correctNumber, joinRoom, startTiebreak, tiebreakDraw };
 }

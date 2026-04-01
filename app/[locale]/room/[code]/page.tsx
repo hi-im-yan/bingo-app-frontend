@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { api, BingoApiError } from "@/lib/api";
 import { useRoomSubscription } from "@/hooks/use-room-subscription";
-import type { RoomDTO } from "@/lib/types";
+import type { RoomDTO, TiebreakDTO } from "@/lib/types";
 import { PlayerNameForm } from "@/components/player-name-form";
 import { PageContainer } from "@/components/page-container";
 import { PageHeader, PageTitle, PageDescription } from "@/components/page-header";
@@ -18,6 +18,7 @@ import { useBallSound } from "@/hooks/use-ball-sound";
 import { DrawPopup } from "@/components/draw-popup";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HelpText } from "@/components/help-text";
+import { TiebreakOverlay } from "@/components/tiebreak-overlay";
 import { useHelpVisible } from "@/hooks/use-help-visible";
 
 export default function PlayerRoomPage() {
@@ -32,6 +33,7 @@ export default function PlayerRoomPage() {
 	const { hideHelp } = useHelpVisible();
 	const prevDrawnCountRef = useRef(-1);
 	const [popupNumber, setPopupNumber] = useState<number | null>(null);
+	const [tiebreak, setTiebreak] = useState<TiebreakDTO | null>(null);
 	const [playerName, setPlayerName] = useState<string | null>(() => {
 		if (typeof window !== "undefined") {
 			return sessionStorage.getItem(`player-name:${params.code}`);
@@ -44,6 +46,11 @@ export default function PlayerRoomPage() {
 		(correction: import("@/lib/types").NumberCorrectionDTO) =>
 			toast.warning(t("correctionToast", { message: correction.message })),
 		[t],
+	);
+
+	const handleTiebreakUpdate = useCallback(
+		(update: TiebreakDTO) => setTiebreak(update),
+		[],
 	);
 
 	useEffect(() => {
@@ -80,6 +87,7 @@ export default function PlayerRoomPage() {
 		onError: handleWsError,
 		onReconnect: handleReconnect,
 		onCorrection: handleCorrection,
+		onTiebreakUpdate: handleTiebreakUpdate,
 	});
 
 	const handlePlayerJoin = useCallback(
@@ -164,6 +172,9 @@ export default function PlayerRoomPage() {
 	return (
 		<PageContainer>
 			<DrawPopup number={popupNumber} onDismiss={handlePopupDismiss} />
+			{tiebreak && (
+				<TiebreakOverlay tiebreak={tiebreak} onClose={() => setTiebreak(null)} />
+			)}
 			<ConnectionStatus connected={connected} reconnecting={reconnecting} />
 
 			<PageHeader>

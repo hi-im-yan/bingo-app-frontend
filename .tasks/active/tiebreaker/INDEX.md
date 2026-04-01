@@ -1,7 +1,7 @@
 # Feature: Tiebreaker (Frontend)
 
-**Status**: blocked
-**Blocked by feature**: backend tiebreaker endpoints (bingoapp `.tasks/active/tiebreaker/`)
+**Status**: ready
+**Blocked by feature**: —
 **Branch**: feature/tiebreaker
 
 ## Description
@@ -34,11 +34,11 @@ When multiple players get BINGO simultaneously in automatic rooms, the admin can
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| F01 | Types + hook (TiebreakDTO, forms, WS send/subscribe) | blocked | backend | Logic Writer |
-| F02 | Tiebreaker overlay component (draws display + winner animation) | blocked | F01 | Component Builder |
-| F03 | Admin tiebreaker panel (start button, slot draw buttons) | blocked | F01 | Component Builder |
-| F04 | Wire overlay into player + admin pages | blocked | F02, F03 | Component Builder |
-| F05 | i18n translations (pt + en) | blocked | F02, F03, F04 | Component Builder |
+| F01 | Types + hook (TiebreakDTO, forms, WS send/subscribe) | done | — | Logic Writer |
+| F02 | Tiebreaker overlay component (draws display + winner animation) | done | — | Component Builder |
+| F03 | Admin tiebreaker panel (start button, slot draw buttons) | done | — | Component Builder |
+| F04 | Wire overlay into player + admin pages | done | — | Component Builder |
+| F05 | i18n translations (pt + en) | done | — | Component Builder |
 
 ## Decisions
 - Tiebreaker button only in AUTOMATIC rooms
