@@ -5,10 +5,10 @@ import messages from "@/messages/en.json";
 import { TiebreakOverlay } from "../tiebreak-overlay";
 import type { TiebreakDTO } from "@/lib/types";
 
-function renderOverlay(tiebreak: TiebreakDTO, onClose?: () => void) {
+function renderOverlay(tiebreak: TiebreakDTO, onClose?: () => void, onDrawSlot?: (slot: number) => void) {
 	return render(
 		<NextIntlClientProvider locale="en" messages={messages}>
-			<TiebreakOverlay tiebreak={tiebreak} onClose={onClose} />
+			<TiebreakOverlay tiebreak={tiebreak} onClose={onClose} onDrawSlot={onDrawSlot} />
 		</NextIntlClientProvider>,
 	);
 }
@@ -165,6 +165,70 @@ describe("TiebreakOverlay", () => {
 			renderOverlay(tiebreak, onClose);
 			await user.click(screen.getByRole("button", { name: /close/i }));
 			expect(onClose).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe("admin draw buttons", () => {
+		it("renders draw buttons when onDrawSlot is provided", () => {
+			const tiebreak: TiebreakDTO = {
+				status: "STARTED",
+				playerCount: 3,
+				draws: [],
+			};
+			renderOverlay(tiebreak, undefined, vi.fn());
+			expect(screen.getByRole("button", { name: "Draw 1" })).toBeInTheDocument();
+			expect(screen.getByRole("button", { name: "Draw 2" })).toBeInTheDocument();
+			expect(screen.getByRole("button", { name: "Draw 3" })).toBeInTheDocument();
+		});
+
+		it("does not render draw buttons when onDrawSlot is omitted", () => {
+			const tiebreak: TiebreakDTO = {
+				status: "STARTED",
+				playerCount: 2,
+				draws: [],
+			};
+			renderOverlay(tiebreak);
+			expect(screen.queryByRole("button", { name: "Draw 1" })).not.toBeInTheDocument();
+		});
+
+		it("calls onDrawSlot with correct slot", async () => {
+			const { default: userEvent } = await import("@testing-library/user-event");
+			const user = userEvent.setup();
+			const onDrawSlot = vi.fn();
+			const tiebreak: TiebreakDTO = {
+				status: "STARTED",
+				playerCount: 3,
+				draws: [],
+			};
+			renderOverlay(tiebreak, undefined, onDrawSlot);
+			await user.click(screen.getByRole("button", { name: "Draw 2" }));
+			expect(onDrawSlot).toHaveBeenCalledWith(2);
+		});
+
+		it("disables buttons for already-drawn slots", () => {
+			const tiebreak: TiebreakDTO = {
+				status: "IN_PROGRESS",
+				playerCount: 3,
+				draws: [{ slot: 1, number: 42, label: "N-42" }],
+			};
+			renderOverlay(tiebreak, undefined, vi.fn());
+			expect(screen.getByRole("button", { name: "Draw 1" })).toBeDisabled();
+			expect(screen.getByRole("button", { name: "Draw 2" })).toBeEnabled();
+		});
+
+		it("hides draw buttons when finished", () => {
+			const tiebreak: TiebreakDTO = {
+				status: "FINISHED",
+				playerCount: 2,
+				draws: [
+					{ slot: 1, number: 42, label: "N-42" },
+					{ slot: 2, number: 68, label: "O-68" },
+				],
+				winnerSlot: 2,
+			};
+			renderOverlay(tiebreak, undefined, vi.fn());
+			expect(screen.queryByRole("button", { name: "Draw 1" })).not.toBeInTheDocument();
+			expect(screen.queryByRole("button", { name: "Draw 2" })).not.toBeInTheDocument();
 		});
 	});
 

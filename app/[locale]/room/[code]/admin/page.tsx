@@ -205,7 +205,7 @@ export default function AdminPage() {
 		<PageContainer className="lg:max-w-5xl">
 			<DrawPopup number={popupNumber} onDismiss={handlePopupDismiss} />
 			{tiebreak && (
-				<TiebreakOverlay tiebreak={tiebreak} onClose={handleTiebreakClose} />
+				<TiebreakOverlay tiebreak={tiebreak} onClose={handleTiebreakClose} onDrawSlot={handleTiebreakDraw} />
 			)}
 			<ConnectionStatus connected={connected} reconnecting={reconnecting} />
 

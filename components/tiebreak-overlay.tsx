@@ -7,9 +7,10 @@ import type { TiebreakDTO, TiebreakDrawEntry } from "@/lib/types";
 interface TiebreakOverlayProps {
 	tiebreak: TiebreakDTO;
 	onClose?: () => void;
+	onDrawSlot?: (slot: number) => void;
 }
 
-export function TiebreakOverlay({ tiebreak, onClose }: TiebreakOverlayProps) {
+export function TiebreakOverlay({ tiebreak, onClose, onDrawSlot }: TiebreakOverlayProps) {
 	const t = useTranslations("tiebreaker");
 	const tc = useTranslations("common");
 	const { status, playerCount, draws, winnerSlot } = tiebreak;
@@ -18,6 +19,7 @@ export function TiebreakOverlay({ tiebreak, onClose }: TiebreakOverlayProps) {
 	const winnerDraw = winnerSlot
 		? draws.find((d) => d.slot === winnerSlot)
 		: undefined;
+	const drawnSlots = new Set(draws.map((d) => d.slot));
 
 	return (
 		<div
@@ -55,6 +57,27 @@ export function TiebreakOverlay({ tiebreak, onClose }: TiebreakOverlayProps) {
 						);
 					})}
 				</div>
+
+				{/* Admin draw buttons — inside the overlay so admin can interact */}
+				{onDrawSlot && !isFinished && (
+					<div className="flex w-full flex-wrap justify-center gap-2">
+						{Array.from({ length: playerCount }, (_, i) => {
+							const slot = i + 1;
+							const isDrawn = drawnSlots.has(slot);
+							return (
+								<Button
+									key={slot}
+									variant={isDrawn ? "outline" : "default"}
+									size="sm"
+									disabled={isDrawn}
+									onClick={() => onDrawSlot(slot)}
+								>
+									{t("drawSlot", { slot })}
+								</Button>
+							);
+						})}
+					</div>
+				)}
 
 				{/* Close button — only when finished */}
 				{isFinished && onClose && (
