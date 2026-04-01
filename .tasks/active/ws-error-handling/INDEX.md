@@ -1,4 +1,4 @@
-# Feature: WebSocket Error Feedback
+# Feature: Backend Error Feedback
 
 **Status**: ready
 **Blocked by feature**: —
@@ -6,22 +6,23 @@
 
 ## Description
 
-When the backend throws an error in response to a STOMP command (draw, tiebreak, etc.), the frontend has no feedback — the UI freezes with no indication of what went wrong. Need to subscribe to the appropriate backend error channel and surface errors as toasts so users aren't left waiting.
+When the backend returns an error — whether via REST (HTTP 500, 4xx) or WebSocket (STOMP command rejection) — the frontend often has no user-facing feedback. The UI freezes or silently fails, leaving users waiting with no indication of what went wrong.
 
 ## Investigation needed
 
-- Check backend error handling: does it use `@MessageExceptionHandler` → `/user/queue/errors`, send error responses on the same topic, or use STOMP ERROR frames?
-- Determine if `/user/queue/errors` works without an authenticated principal (creator uses X-Creator-Hash, players are unauthenticated)
-- If user-queue doesn't work, consider a room-scoped error topic like `/room/{code}/errors`
+- **WS**: Check backend error handling — `@MessageExceptionHandler` → `/user/queue/errors`, error responses on the same topic, or STOMP ERROR frames? Does `/user/queue/errors` work without an authenticated principal?
+- **REST**: Audit `lib/api.ts` for unhandled error paths — are 500s and unexpected 4xx surfaced to the user or swallowed?
 
 ## Tasks
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| F01 | Investigate backend error handling pattern | ready | — | — |
-| F02 | Subscribe to error channel in useStompClient or useRoomSubscription | blocked | F01 | — |
-| F03 | Surface errors as toasts + reset pending UI state | blocked | F02 | — |
+| F01 | Investigate backend WS error handling pattern | ready | — | — |
+| F02 | Audit REST error handling in api.ts and page-level catch blocks | ready | — | — |
+| F03 | Subscribe to WS error channel in useStompClient or useRoomSubscription | blocked | F01 | — |
+| F04 | Add global/consistent REST error toast for unhandled 5xx/4xx | blocked | F02 | — |
+| F05 | Surface errors as toasts + reset pending UI state | blocked | F03, F04 | — |
 
 ## Scope
 
-This is a general feature — applies to all WS commands (draw, correct, tiebreak, join), not just tiebreaker.
+General feature — applies to all backend interactions (REST and WS), not tied to any specific feature.
