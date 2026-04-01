@@ -7,7 +7,6 @@ import { GameCard, GameCardContent, GameCardHeader, GameCardTitle } from "@/comp
 import type { TiebreakDTO } from "@/lib/types";
 
 const MIN_PLAYERS = 2;
-const MAX_PLAYERS = 6;
 
 interface AdminTiebreakPanelProps {
 	tiebreak: TiebreakDTO | null;
@@ -30,7 +29,7 @@ function StartForm({ onStart }: { onStart: (playerCount: number) => void }) {
 	const [playerCount, setPlayerCount] = useState(MIN_PLAYERS);
 
 	const handleStart = () => {
-		const clamped = Math.min(MAX_PLAYERS, Math.max(MIN_PLAYERS, playerCount));
+		const clamped = Math.max(MIN_PLAYERS, playerCount);
 		onStart(clamped);
 	};
 
@@ -50,7 +49,6 @@ function StartForm({ onStart }: { onStart: (playerCount: number) => void }) {
 						role="spinbutton"
 						aria-label={t("playerCount")}
 						min={MIN_PLAYERS}
-						max={MAX_PLAYERS}
 						value={playerCount}
 						onChange={(e) => setPlayerCount(Number(e.target.value))}
 						className="w-16 rounded-md border border-input bg-background px-2 py-1 text-center text-sm tabular-nums transition-colors focus:outline-none focus:ring-2 focus:ring-ring"

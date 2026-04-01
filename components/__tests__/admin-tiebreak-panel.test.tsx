@@ -56,7 +56,7 @@ describe("AdminTiebreakPanel", () => {
 			expect(onStart).toHaveBeenCalledWith(2);
 		});
 
-		it("clamps player count to maximum of 6", async () => {
+		it("allows player count above 6", async () => {
 			const user = userEvent.setup();
 			const onStart = vi.fn();
 			renderPanel(null, { ...defaultProps, onStart });
@@ -65,7 +65,7 @@ describe("AdminTiebreakPanel", () => {
 			await user.clear(input);
 			await user.type(input, "9");
 			await user.click(screen.getByRole("button", { name: "Start Tiebreaker" }));
-			expect(onStart).toHaveBeenCalledWith(6);
+			expect(onStart).toHaveBeenCalledWith(9);
 		});
 	});
 
