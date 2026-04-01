@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useRoomSubscription } from "../use-room-subscription";
-import type { RoomDTO, NumberCorrectionDTO, PlayerDTO } from "@/lib/types";
+import type { RoomDTO, NumberCorrectionDTO, PlayerDTO, TiebreakDTO } from "@/lib/types";
 
 const mockSubscribe = vi.fn();
 const mockPublish = vi.fn();
@@ -278,5 +278,118 @@ describe("useRoomSubscription", () => {
 
 		expect(onError).toHaveBeenCalledWith("Failed to parse player update");
 		expect(onPlayerJoin).not.toHaveBeenCalled();
+	});
+
+	it("publishes start-tiebreak with correct payload", () => {
+		const { result } = renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123" }),
+		);
+
+		act(() => {
+			result.current.startTiebreak("hash-123", 4);
+		});
+
+		expect(mockPublish).toHaveBeenCalledWith(
+			"/app/start-tiebreak",
+			JSON.stringify({
+				"session-code": "ABC123",
+				"creator-hash": "hash-123",
+				"player-count": 4,
+			}),
+		);
+	});
+
+	it("publishes tiebreak-draw with correct payload", () => {
+		const { result } = renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123" }),
+		);
+
+		act(() => {
+			result.current.tiebreakDraw("hash-123", 2);
+		});
+
+		expect(mockPublish).toHaveBeenCalledWith(
+			"/app/tiebreak-draw",
+			JSON.stringify({
+				"session-code": "ABC123",
+				"creator-hash": "hash-123",
+				slot: 2,
+			}),
+		);
+	});
+
+	it("subscribes to tiebreak topic when onTiebreakUpdate is provided", () => {
+		const onTiebreakUpdate = vi.fn();
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123", onTiebreakUpdate }),
+		);
+
+		expect(mockSubscribe).toHaveBeenCalledWith(
+			"/room/ABC123/tiebreak",
+			expect.any(Function),
+		);
+	});
+
+	it("does NOT subscribe to tiebreak topic when onTiebreakUpdate is omitted", () => {
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123" }),
+		);
+
+		const tiebreakCalls = mockSubscribe.mock.calls.filter(
+			([dest]) => dest === "/room/ABC123/tiebreak",
+		);
+		expect(tiebreakCalls).toHaveLength(0);
+	});
+
+	it("calls onTiebreakUpdate callback with parsed TiebreakDTO", () => {
+		const onTiebreakUpdate = vi.fn();
+		let tiebreakCallback: (msg: { body: string }) => void = () => {};
+
+		mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+			if (dest === "/room/ABC123/tiebreak") {
+				tiebreakCallback = cb;
+			}
+			return vi.fn();
+		});
+
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123", onTiebreakUpdate }),
+		);
+
+		const tiebreak: TiebreakDTO = {
+			status: "IN_PROGRESS",
+			playerCount: 3,
+			draws: [{ slot: 1, number: 42, label: "N-42" }],
+		};
+
+		act(() => {
+			tiebreakCallback({ body: JSON.stringify(tiebreak) });
+		});
+
+		expect(onTiebreakUpdate).toHaveBeenCalledWith(tiebreak);
+	});
+
+	it("calls onError when tiebreak message fails to parse", () => {
+		const onTiebreakUpdate = vi.fn();
+		const onError = vi.fn();
+		let tiebreakCallback: (msg: { body: string }) => void = () => {};
+
+		mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+			if (dest === "/room/ABC123/tiebreak") {
+				tiebreakCallback = cb;
+			}
+			return vi.fn();
+		});
+
+		renderHook(() =>
+			useRoomSubscription({ sessionCode: "ABC123", onTiebreakUpdate, onError }),
+		);
+
+		act(() => {
+			tiebreakCallback({ body: "not valid json {{" });
+		});
+
+		expect(onError).toHaveBeenCalledWith("Failed to parse tiebreak update");
+		expect(onTiebreakUpdate).not.toHaveBeenCalled();
 	});
 });

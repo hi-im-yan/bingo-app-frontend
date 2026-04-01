@@ -57,3 +57,30 @@ export interface ApiError {
 	status: number;
 	message: string;
 }
+
+export type TiebreakStatus = "STARTED" | "IN_PROGRESS" | "FINISHED";
+
+export interface TiebreakDrawEntry {
+	slot: number;
+	number: number;
+	label: string;
+}
+
+export interface TiebreakDTO {
+	status: TiebreakStatus;
+	playerCount: number;
+	draws: TiebreakDrawEntry[];
+	winnerSlot?: number;
+}
+
+export interface StartTiebreakForm {
+	"session-code": string;
+	"creator-hash": string;
+	"player-count": number;
+}
+
+export interface TiebreakDrawForm {
+	"session-code": string;
+	"creator-hash": string;
+	slot: number;
+}
