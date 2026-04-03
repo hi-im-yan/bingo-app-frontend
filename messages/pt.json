@@ -72,7 +72,7 @@
 		"lastDrawn": "Último sorteado",
 		"recentDraws": "Últimos sorteados",
 		"waitingForDraw": "Aguardando sorteio...",
-		"correctionToast": "Número corrigido: {message}",
+		"correctionToast": "{oldLabel} foi corrigido para {newLabel}",
 		"numberDrawn": "Número sorteado: {label}",
 		"help": {
 			"playerIntro": "O anfitrião está sorteando números. Quando um número for sorteado, ele aparecerá aqui. Marque no seu cartão de bingo!",
@@ -104,7 +104,7 @@
 		"correctConfirmDesc": "Substituir {old} por {new}?",
 		"correctOld": "Atual",
 		"correctNew": "Novo",
-		"correctionToast": "Número corrigido: {message}",
+		"correctionToast": "{oldLabel} foi corrigido para {newLabel}",
 		"players": "Jogadores",
 		"noPlayersYet": "Nenhum jogador ainda",
 		"playerJoined": "{name} entrou na sala",

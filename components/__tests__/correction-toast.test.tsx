@@ -18,7 +18,7 @@ function useCorrectionToast(namespace: "room" | "admin") {
 	const t = useTranslations(namespace);
 	return useCallback(
 		(correction: NumberCorrectionDTO) => {
-			toast.warning(t("correctionToast", { message: correction.message }));
+			toast.warning(t("correctionToast", { oldLabel: correction.oldLabel, newLabel: correction.newLabel }));
 		},
 		[t],
 	);
@@ -66,7 +66,7 @@ describe("Correction toast — admin namespace", () => {
 			handler?.(correction);
 		});
 		expect(mockToastWarning).toHaveBeenCalledWith(
-			`Number corrected: ${correction.message}`,
+			`${correction.oldLabel} was corrected to ${correction.newLabel}`,
 		);
 	});
 });
@@ -83,7 +83,7 @@ describe("Correction toast — room (player) namespace", () => {
 			handler?.(correction);
 		});
 		expect(mockToastWarning).toHaveBeenCalledWith(
-			`Number corrected: ${correction.message}`,
+			`${correction.oldLabel} was corrected to ${correction.newLabel}`,
 		);
 	});
 });

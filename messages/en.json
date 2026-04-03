@@ -72,7 +72,7 @@
 		"lastDrawn": "Last drawn",
 		"recentDraws": "Recent draws",
 		"waitingForDraw": "Waiting for draw...",
-		"correctionToast": "Number corrected: {message}",
+		"correctionToast": "{oldLabel} was corrected to {newLabel}",
 		"numberDrawn": "Number drawn: {label}",
 		"help": {
 			"playerIntro": "The host is drawing numbers. When a number is called, it will appear here. Mark it off on your bingo card!",
@@ -104,7 +104,7 @@
 		"correctConfirmDesc": "Replace {old} with {new}?",
 		"correctOld": "Current",
 		"correctNew": "New",
-		"correctionToast": "Number corrected: {message}",
+		"correctionToast": "{oldLabel} was corrected to {newLabel}",
 		"players": "Players",
 		"noPlayersYet": "No players yet",
 		"playerJoined": "{name} joined the room",

@@ -111,7 +111,7 @@ export default function AdminPage() {
 
 	const handleCorrection = useCallback(
 		(correction: import("@/lib/types").NumberCorrectionDTO) =>
-			toast.warning(t("correctionToast", { message: correction.message })),
+			toast.warning(t("correctionToast", { oldLabel: correction.oldLabel, newLabel: correction.newLabel })),
 		[t],
 	);
 
