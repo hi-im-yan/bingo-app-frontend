@@ -1,14 +1,18 @@
-import type { RoomDTO, CreateRoomForm, ApiError, PlayerDTO } from "@/lib/types";
+import type { RoomDTO, CreateRoomForm, ErrorResponse, FieldError, PlayerDTO } from "@/lib/types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
 class BingoApiError extends Error {
 	status: number;
+	code: string;
+	fields?: FieldError[];
 
-	constructor(status: number, message: string) {
+	constructor(status: number, message: string, code = "UNKNOWN", fields?: FieldError[]) {
 		super(message);
 		this.name = "BingoApiError";
 		this.status = status;
+		this.code = code;
+		this.fields = fields;
 	}
 }
 
@@ -51,13 +55,13 @@ async function request<T>(
 	});
 
 	if (!response.ok) {
-		let error: ApiError;
+		let error: ErrorResponse;
 		try {
 			error = await response.json();
 		} catch {
-			error = { status: response.status, message: response.statusText };
+			error = { status: response.status, code: "UNKNOWN", message: response.statusText };
 		}
-		throw new BingoApiError(error.status, error.message);
+		throw new BingoApiError(error.status, error.message, error.code, error.fields);
 	}
 
 	if (response.status === 204 || response.headers.get("content-length") === "0") {

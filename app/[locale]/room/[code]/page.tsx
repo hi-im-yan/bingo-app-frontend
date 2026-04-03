@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { api, BingoApiError } from "@/lib/api";
 import { useRoomSubscription } from "@/hooks/use-room-subscription";
+import type { WsErrorResponse } from "@/hooks/use-stomp-client";
 import type { RoomDTO, TiebreakDTO } from "@/lib/types";
 import { PlayerNameForm } from "@/components/player-name-form";
 import { PageContainer } from "@/components/page-container";
@@ -59,8 +60,8 @@ export default function PlayerRoomPage() {
 				const room = await api.getRoom(params.code);
 				setInitialRoom(room);
 			} catch (err) {
-				if (err instanceof BingoApiError && err.status === 404) {
-					setError(tErrors("roomNotFound"));
+				if (err instanceof BingoApiError && err.code === "ROOM_NOT_FOUND") {
+					setError(tErrors("ROOM_NOT_FOUND"));
 				} else {
 					setError(tErrors("generic"));
 				}
@@ -76,6 +77,16 @@ export default function PlayerRoomPage() {
 		[],
 	);
 
+	const handleServerError = useCallback(
+		(error: WsErrorResponse) => {
+			const message = tErrors.has(error.code)
+				? tErrors(error.code)
+				: error.message || tErrors("generic");
+			toast.error(message);
+		},
+		[tErrors],
+	);
+
 	const handleReconnect = useCallback(
 		() => toast.success(tErrors("reconnected")),
 		[tErrors],
@@ -85,6 +96,7 @@ export default function PlayerRoomPage() {
 		sessionCode: params.code,
 		initialRoom: initialRoom ?? undefined,
 		onError: handleWsError,
+		onServerError: handleServerError,
 		onReconnect: handleReconnect,
 		onCorrection: handleCorrection,
 		onTiebreakUpdate: handleTiebreakUpdate,

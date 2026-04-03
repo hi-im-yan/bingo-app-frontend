@@ -136,6 +136,23 @@
 		"invalidCode": "Invalid room code",
 		"drawFailed": "Failed to draw number",
 		"deleteFailed": "Failed to close room",
-		"generic": "Something went wrong. Please try again."
+		"generic": "Something went wrong. Please try again.",
+		"ROOM_NOT_FOUND": "Room not found — it may have expired or the code is incorrect.",
+		"ROOM_NAME_TAKEN": "A room with this name already exists. Choose a different name.",
+		"PLAYER_NAME_TAKEN": "That name is taken. Choose a different name.",
+		"DRAW_MODE_MISMATCH": "This operation isn't available for this room's draw mode.",
+		"NUMBER_OUT_OF_RANGE": "Invalid number — must be between 1 and 75.",
+		"NUMBER_ALREADY_DRAWN": "That number has already been drawn.",
+		"ALL_NUMBERS_DRAWN": "All numbers have been drawn! The game is complete.",
+		"NO_NUMBERS_DRAWN": "No numbers to correct yet.",
+		"TIEBREAK_INVALID_PLAYER_COUNT": "Tiebreaker needs at least 2 players.",
+		"TIEBREAK_NOT_ENOUGH_NUMBERS": "Not enough numbers remaining for this many players.",
+		"TIEBREAK_ALREADY_ACTIVE": "A tiebreaker is already in progress. Finish it first.",
+		"TIEBREAK_NOT_ACTIVE": "No tiebreaker is active. Start one first.",
+		"TIEBREAK_INVALID_SLOT": "Invalid player slot.",
+		"TIEBREAK_SLOT_ALREADY_DRAWN": "This player has already drawn.",
+		"TIEBREAK_NO_NUMBERS_REMAINING": "No numbers remaining for the tiebreaker.",
+		"VALIDATION_ERROR": "Please check your input and try again.",
+		"INTERNAL_ERROR": "Something went wrong on the server. Try again later."
 	}
 }

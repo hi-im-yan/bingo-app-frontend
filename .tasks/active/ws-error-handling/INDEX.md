@@ -1,8 +1,8 @@
 # Feature: Backend Error Feedback
 
-**Status**: ready
+**Status**: in-progress
 **Blocked by feature**: —
-**Branch**: TBD
+**Branch**: feature/ws-error-handling
 
 ## Description
 
@@ -17,11 +17,11 @@ When the backend returns an error — whether via REST (HTTP 500, 4xx) or WebSoc
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 01| Investigate backend WS error handling pattern | ready | — | — |
-| 02| Audit REST error handling in api.ts and page-level catch blocks | ready | — | — |
-| 03| Subscribe to WS error channel in useStompClient or useRoomSubscription | blocked | 01| — |
-| 04| Add global/consistent REST error toast for unhandled 5xx/4xx | blocked | 02| — |
-| 05| Surface errors as toasts + reset pending UI state | blocked | 03, 04 | — |
+| 01| Investigate backend WS error handling pattern | done | — | Opus |
+| 02| Audit REST error handling in api.ts and page-level catch blocks | done | — | Opus |
+| 03| Subscribe to WS error channel in useStompClient | done | 01| Opus |
+| 04| Add error code → i18n toast mapping + fix REST error gaps | done | 02| Opus |
+| 05| Surface errors as toasts + reset pending UI state | done | 03, 04 | Opus |
 
 ## Scope
 

@@ -57,8 +57,16 @@ export default function CreateRoomPage() {
 			router.push(`/room/${room.sessionCode}/admin`);
 		} catch (error) {
 			if (error instanceof BingoApiError) {
-				if (error.status === 409) {
+				if (error.code === "ROOM_NAME_TAKEN") {
 					form.setError("name", { message: t("nameConflict") });
+				} else if (error.code === "VALIDATION_ERROR" && error.fields) {
+					for (const field of error.fields) {
+						if (field.field === "name") {
+							form.setError("name", { message: t("nameRequired") });
+						} else if (field.field === "description") {
+							form.setError("description", { message: t("nameTooLong") });
+						}
+					}
 				} else {
 					setServerError(error.message);
 				}

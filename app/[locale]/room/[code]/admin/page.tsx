@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { api, BingoApiError, getCreatorHash } from "@/lib/api";
 import { useRoomSubscription } from "@/hooks/use-room-subscription";
+import type { WsErrorResponse } from "@/hooks/use-stomp-client";
 import type { RoomDTO, PlayerDTO, TiebreakDTO } from "@/lib/types";
 import { PageContainer } from "@/components/page-container";
 import { PageHeader, PageTitle, PageDescription } from "@/components/page-header";
@@ -54,15 +55,23 @@ export default function AdminPage() {
 
 		async function fetchRoom() {
 			try {
-				const [room, initialPlayers] = await Promise.all([
-					api.getRoom(params.code),
-					api.getPlayers(params.code).catch(() => [] as PlayerDTO[]),
-				]);
+				const room = await api.getRoom(params.code);
 				setInitialRoom(room);
-				setPlayers(initialPlayers);
+				try {
+					const initialPlayers = await api.getPlayers(params.code);
+					setPlayers(initialPlayers);
+				} catch (playerErr) {
+					if (playerErr instanceof BingoApiError && playerErr.code === "ROOM_NOT_FOUND") {
+						// Creator hash mismatch — player list unavailable
+						setPlayers([]);
+					} else {
+						toast.error(tErrors("generic"));
+						setPlayers([]);
+					}
+				}
 			} catch (err) {
-				if (err instanceof BingoApiError && err.status === 404) {
-					setError(tErrors("roomNotFound"));
+				if (err instanceof BingoApiError && err.code === "ROOM_NOT_FOUND") {
+					setError(tErrors("ROOM_NOT_FOUND"));
 				} else {
 					setError(tErrors("generic"));
 				}
@@ -77,12 +86,22 @@ export default function AdminPage() {
 	const handleWsError = useCallback(
 		(error: string) => {
 			toast.error(error);
+		},
+		[],
+	);
+
+	const handleServerError = useCallback(
+		(error: WsErrorResponse) => {
+			const message = tErrors.has(error.code)
+				? tErrors(error.code)
+				: error.message || tErrors("generic");
+			toast.error(message);
 			if (tiebreakPendingRef.current) {
 				tiebreakPendingRef.current = false;
 				setTiebreak(null);
 			}
 		},
-		[],
+		[tErrors],
 	);
 
 	const handleReconnect = useCallback(
@@ -116,6 +135,7 @@ export default function AdminPage() {
 		sessionCode: params.code,
 		initialRoom: initialRoom ?? undefined,
 		onError: handleWsError,
+		onServerError: handleServerError,
 		onReconnect: handleReconnect,
 		onCorrection: handleCorrection,
 		onPlayerJoin: handlePlayerJoin,

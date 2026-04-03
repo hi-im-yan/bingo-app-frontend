@@ -17,9 +17,11 @@ vi.mock("@/lib/api", () => ({
 	},
 	BingoApiError: class BingoApiError extends Error {
 		status: number;
-		constructor(status: number, message: string) {
+		code: string;
+		constructor(status: number, message: string, code = "UNKNOWN") {
 			super(message);
 			this.status = status;
+			this.code = code;
 		}
 	},
 }));
@@ -95,7 +97,7 @@ describe("Create Room Page", () => {
 	it("shows conflict error on 409", async () => {
 		const { api, BingoApiError } = await import("@/lib/api");
 		vi.mocked(api.createRoom).mockRejectedValue(
-			new BingoApiError(409, "Room name already taken"),
+			new BingoApiError(409, "Room already exists.", "ROOM_NAME_TAKEN"),
 		);
 
 		const user = userEvent.setup();

@@ -2,12 +2,13 @@
 
 import { useEffect, useState, useCallback } from "react";
 import type { RoomDTO, AddNumberForm, DrawNumberForm, CorrectNumberForm, NumberCorrectionDTO, PlayerDTO, JoinRoomForm, TiebreakDTO, StartTiebreakForm, TiebreakDrawForm } from "@/lib/types";
-import { useStompClient } from "./use-stomp-client";
+import { useStompClient, type WsErrorResponse } from "./use-stomp-client";
 
 interface UseRoomSubscriptionOptions {
 	sessionCode: string;
 	initialRoom?: RoomDTO;
 	onError?: (error: string) => void;
+	onServerError?: (error: WsErrorResponse) => void;
 	onReconnect?: () => void;
 	onCorrection?: (correction: NumberCorrectionDTO) => void;
 	onPlayerJoin?: (player: PlayerDTO) => void;
@@ -30,6 +31,7 @@ export function useRoomSubscription({
 	sessionCode,
 	initialRoom,
 	onError,
+	onServerError,
 	onReconnect,
 	onCorrection,
 	onPlayerJoin,
@@ -39,6 +41,7 @@ export function useRoomSubscription({
 
 	const { connected, reconnecting, subscribe, publish } = useStompClient({
 		onError,
+		onServerError,
 		onReconnect,
 	});
 

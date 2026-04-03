@@ -36,8 +36,8 @@ export default function JoinRoomPage() {
 			await api.getRoom(trimmed);
 			router.push(`/room/${trimmed}`);
 		} catch (err) {
-			if (err instanceof BingoApiError && err.status === 404) {
-				setError(tErrors("roomNotFound"));
+			if (err instanceof BingoApiError && err.code === "ROOM_NOT_FOUND") {
+				setError(tErrors("ROOM_NOT_FOUND"));
 			} else {
 				setError(tErrors("generic"));
 			}

@@ -17,9 +17,11 @@ vi.mock("@/lib/api", () => ({
 	},
 	BingoApiError: class BingoApiError extends Error {
 		status: number;
-		constructor(status: number, message: string) {
+		code: string;
+		constructor(status: number, message: string, code = "UNKNOWN") {
 			super(message);
 			this.status = status;
+			this.code = code;
 		}
 	},
 }));
@@ -82,7 +84,7 @@ describe("Join Room Page", () => {
 	it("shows error on 404", async () => {
 		const { api, BingoApiError } = await import("@/lib/api");
 		vi.mocked(api.getRoom).mockRejectedValue(
-			new BingoApiError(404, "Room not found"),
+			new BingoApiError(404, "not found", "ROOM_NOT_FOUND"),
 		);
 
 		const user = userEvent.setup();
@@ -92,7 +94,7 @@ describe("Join Room Page", () => {
 		await user.click(screen.getByRole("button", { name: "Join" }));
 
 		await waitFor(() => {
-			expect(screen.getByText("Room not found")).toBeInTheDocument();
+			expect(screen.getByText("Room not found — it may have expired or the code is incorrect.")).toBeInTheDocument();
 		});
 	});
 });

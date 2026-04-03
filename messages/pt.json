@@ -136,6 +136,23 @@
 		"invalidCode": "Código de sala inválido",
 		"drawFailed": "Erro ao sortear número",
 		"deleteFailed": "Erro ao encerrar sala",
-		"generic": "Algo deu errado. Tente novamente."
+		"generic": "Algo deu errado. Tente novamente.",
+		"ROOM_NOT_FOUND": "Sala não encontrada — pode ter expirado ou o código está incorreto.",
+		"ROOM_NAME_TAKEN": "Já existe uma sala com esse nome. Escolha outro nome.",
+		"PLAYER_NAME_TAKEN": "Esse nome já está em uso. Escolha outro nome.",
+		"DRAW_MODE_MISMATCH": "Esta operação não está disponível para o modo de sorteio desta sala.",
+		"NUMBER_OUT_OF_RANGE": "Número inválido — deve ser entre 1 e 75.",
+		"NUMBER_ALREADY_DRAWN": "Esse número já foi sorteado.",
+		"ALL_NUMBERS_DRAWN": "Todos os números foram sorteados! O jogo está completo.",
+		"NO_NUMBERS_DRAWN": "Nenhum número para corrigir ainda.",
+		"TIEBREAK_INVALID_PLAYER_COUNT": "O desempate precisa de pelo menos 2 jogadores.",
+		"TIEBREAK_NOT_ENOUGH_NUMBERS": "Números insuficientes para essa quantidade de jogadores.",
+		"TIEBREAK_ALREADY_ACTIVE": "Já existe um desempate em andamento. Termine-o primeiro.",
+		"TIEBREAK_NOT_ACTIVE": "Nenhum desempate ativo. Inicie um primeiro.",
+		"TIEBREAK_INVALID_SLOT": "Posição de jogador inválida.",
+		"TIEBREAK_SLOT_ALREADY_DRAWN": "Este jogador já sorteou.",
+		"TIEBREAK_NO_NUMBERS_REMAINING": "Nenhum número restante para o desempate.",
+		"VALIDATION_ERROR": "Verifique os dados e tente novamente.",
+		"INTERNAL_ERROR": "Algo deu errado no servidor. Tente novamente mais tarde."
 	}
 }

@@ -53,10 +53,20 @@ export interface JoinRoomForm {
 	"player-name": string;
 }
 
-export interface ApiError {
-	status: number;
-	message: string;
+export interface FieldError {
+	field: string;
+	code: string;
 }
+
+export interface ErrorResponse {
+	status: number;
+	code: string;
+	message: string;
+	fields?: FieldError[];
+}
+
+/** @deprecated Use ErrorResponse instead */
+export type ApiError = ErrorResponse;
 
 export type TiebreakStatus = "STARTED" | "IN_PROGRESS" | "FINISHED";
 

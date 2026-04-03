@@ -13,10 +13,17 @@ const WS_BASE = toSockJsUrl(
 );
 const WS_URL = `${WS_BASE.replace(/\/$/, "")}/bingo-connect`;
 
+export interface WsErrorResponse {
+	status: number;
+	code: string;
+	message: string;
+}
+
 interface UseStompClientOptions {
 	onConnect?: () => void;
 	onDisconnect?: () => void;
 	onError?: (error: string) => void;
+	onServerError?: (error: WsErrorResponse) => void;
 	onReconnect?: () => void;
 	reconnectDelay?: number;
 }
@@ -29,14 +36,14 @@ interface UseStompClientReturn {
 }
 
 export function useStompClient(options: UseStompClientOptions = {}): UseStompClientReturn {
-	const { onConnect, onDisconnect, onError, onReconnect, reconnectDelay = 5000 } = options;
+	const { onConnect, onDisconnect, onError, onServerError, onReconnect, reconnectDelay = 5000 } = options;
 	const [connected, setConnected] = useState(false);
 	const [reconnecting, setReconnecting] = useState(false);
 	const clientRef = useRef<Client | null>(null);
 	const wasConnectedRef = useRef(false);
-	const callbacksRef = useRef({ onConnect, onDisconnect, onError, onReconnect });
+	const callbacksRef = useRef({ onConnect, onDisconnect, onError, onServerError, onReconnect });
 
-	callbacksRef.current = { onConnect, onDisconnect, onError, onReconnect };
+	callbacksRef.current = { onConnect, onDisconnect, onError, onServerError, onReconnect };
 
 	useEffect(() => {
 		const client = new Client({
@@ -50,6 +57,16 @@ export function useStompClient(options: UseStompClientOptions = {}): UseStompCli
 			heartbeatIncoming: 10000,
 			heartbeatOutgoing: 10000,
 			onConnect: () => {
+				// Subscribe to personal error queue immediately
+				client.subscribe("/user/queue/errors", (message) => {
+					try {
+						const error: WsErrorResponse = JSON.parse(message.body);
+						callbacksRef.current.onServerError?.(error);
+					} catch {
+						callbacksRef.current.onError?.("Failed to parse server error");
+					}
+				});
+
 				const wasReconnect = wasConnectedRef.current;
 				setConnected(true);
 				setReconnecting(false);
