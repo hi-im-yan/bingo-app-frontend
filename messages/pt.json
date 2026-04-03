@@ -57,6 +57,7 @@
 		"namePlaceholder": "Digite seu nome",
 		"joinButton": "Entrar",
 		"joining": "Entrando...",
+		"joiningRoom": "Digite seu nome para entrar",
 		"codeRequired": "Código da sala é obrigatório",
 		"nameTaken": "Este nome já está em uso",
 		"roomNotFound": "Sala não encontrada",

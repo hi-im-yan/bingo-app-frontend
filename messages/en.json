@@ -57,6 +57,7 @@
 		"namePlaceholder": "Enter your name",
 		"joinButton": "Join",
 		"joining": "Joining...",
+		"joiningRoom": "Enter your name to join",
 		"codeRequired": "Room code is required",
 		"nameTaken": "This name is already taken",
 		"roomNotFound": "Room not found",

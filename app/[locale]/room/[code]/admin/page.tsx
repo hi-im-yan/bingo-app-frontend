@@ -246,6 +246,9 @@ export default function AdminPage() {
 				<PageDescription>
 					{t("roomMode", { mode: modeLabel })}
 				</PageDescription>
+				{displayRoom.description && (
+					<p className="text-sm text-muted-foreground">{displayRoom.description}</p>
+				)}
 			</PageHeader>
 
 			<HelpText>

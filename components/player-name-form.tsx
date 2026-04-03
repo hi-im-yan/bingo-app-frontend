@@ -15,6 +15,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { PageHeader, PageTitle, PageDescription } from "@/components/page-header";
 
 const playerNameSchema = z.object({
 	playerName: z.string().min(1).max(50),
@@ -24,6 +25,8 @@ type PlayerNameValues = z.infer<typeof playerNameSchema>;
 
 export interface PlayerNameFormProps {
 	sessionCode: string;
+	roomName?: string;
+	roomDescription?: string;
 	onJoin: (playerName: string) => void;
 	error?: string | null;
 	submitting?: boolean;
@@ -31,6 +34,8 @@ export interface PlayerNameFormProps {
 
 export function PlayerNameForm({
 	sessionCode: _sessionCode,
+	roomName,
+	roomDescription,
 	onJoin,
 	error,
 	submitting = false,
@@ -56,7 +61,17 @@ export function PlayerNameForm({
 	}
 
 	return (
-		<Form {...form}>
+		<div className="flex flex-col gap-5">
+			{roomName && (
+				<PageHeader>
+					<PageTitle>{roomName}</PageTitle>
+					{roomDescription && (
+						<PageDescription>{roomDescription}</PageDescription>
+					)}
+					<p className="text-sm text-muted-foreground">{t("joiningRoom")}</p>
+				</PageHeader>
+			)}
+			<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
 				<FormField
 					control={form.control}
@@ -87,5 +102,6 @@ export function PlayerNameForm({
 				</Button>
 			</form>
 		</Form>
+		</div>
 	);
 }

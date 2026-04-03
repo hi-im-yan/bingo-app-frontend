@@ -144,6 +144,8 @@ export default function PlayerRoomPage() {
 			<PageContainer className="justify-center">
 				<PlayerNameForm
 					sessionCode={params.code}
+					roomName={initialRoom?.name}
+					roomDescription={initialRoom?.description}
 					onJoin={handlePlayerJoin}
 					error={joinError}
 					submitting={joining}
@@ -194,6 +196,9 @@ export default function PlayerRoomPage() {
 				<PageDescription>
 					{tAdmin("roomMode", { mode: modeLabel })}
 				</PageDescription>
+				{displayRoom.description && (
+					<p className="text-sm text-muted-foreground">{displayRoom.description}</p>
+				)}
 			</PageHeader>
 
 			<HelpText>
