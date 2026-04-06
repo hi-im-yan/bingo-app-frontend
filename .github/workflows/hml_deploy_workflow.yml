@@ -3,7 +3,7 @@ name: Deploy to Render (HML)
 on:
   push:
     branches:
-      - hml
+      - develop
 
 jobs:
   build_and_deploy:
