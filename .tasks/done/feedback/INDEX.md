@@ -10,7 +10,7 @@
 |----|------|--------|------------|----------|
 | 001 | Types, API function, i18n translations | done | — | — |
 | 002 | FeedbackDialog component + tests | done | — | — |
-| 003 | Wire feedback button into AppHeader | ready | — | — |
+| 003 | Wire feedback button into AppHeader | done | — | — |
 
 ## Decisions
 - Button in AppHeader right section: icon-only on mobile (MessageSquarePlus), icon + "Feedback" label on sm+ screens
