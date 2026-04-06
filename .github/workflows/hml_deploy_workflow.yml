@@ -1,12 +1,12 @@
-name: Deploy to VPS (Production)
+name: Deploy to Render (HML)
 
 on:
   push:
     branches:
-      - main
+      - hml
 
 jobs:
-  build_and_push:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,10 +29,13 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_HUB_REPOSITORY }}/bingoapp-frontend:${{ github.run_number }}
-            ${{ secrets.DOCKER_HUB_REPOSITORY }}/bingoapp-frontend:latest
+            ${{ secrets.DOCKER_HUB_REPOSITORY }}/bingoapp-frontend:hml-${{ github.run_number }}
+            ${{ secrets.DOCKER_HUB_REPOSITORY }}/bingoapp-frontend:hml-latest
           build-args: |
-            NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
-            NEXT_PUBLIC_WS_URL=${{ vars.NEXT_PUBLIC_WS_URL }}
+            NEXT_PUBLIC_API_URL=${{ vars.HML_NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_WS_URL=${{ vars.HML_NEXT_PUBLIC_WS_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Deploy to Render
+        run: curl "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
