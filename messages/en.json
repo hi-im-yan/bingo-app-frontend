@@ -128,6 +128,23 @@
 		"alreadyDrawn": "Already drawn",
 		"tapToDraw": "Tap to draw"
 	},
+	"feedback": {
+		"button": "Feedback",
+		"title": "Send Feedback",
+		"description": "Help us improve the experience",
+		"nameLabel": "Your name",
+		"namePlaceholder": "Enter your name",
+		"contentLabel": "Message",
+		"contentPlaceholder": "Tell us what you think...",
+		"emailLabel": "Email (optional)",
+		"emailPlaceholder": "your@email.com",
+		"phoneLabel": "Phone (optional)",
+		"phonePlaceholder": "Your phone number",
+		"submit": "Send",
+		"submitting": "Sending...",
+		"success": "Thank you for your feedback!",
+		"error": "Failed to send feedback. Please try again."
+	},
 	"errors": {
 		"connectionLost": "Connection lost",
 		"reconnecting": "Reconnecting...",

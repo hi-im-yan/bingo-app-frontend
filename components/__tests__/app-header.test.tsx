@@ -5,6 +5,15 @@ import { NextIntlClientProvider } from "next-intl";
 import messages from "@/messages/en.json";
 import { AppHeader } from "../app-header";
 
+vi.mock("@/components/feedback-dialog", () => ({
+	FeedbackDialog: ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) =>
+		open ? (
+			<div role="dialog" aria-label="feedback-dialog">
+				<button onClick={() => onOpenChange(false)}>Close</button>
+			</div>
+		) : null,
+}));
+
 let mockHelpVisible = false;
 const mockToggleHelp = vi.fn();
 
@@ -92,5 +101,31 @@ describe("AppHeader", () => {
 	it("has data-slot attribute", () => {
 		const { container } = renderHeader();
 		expect(container.querySelector("[data-slot='app-header']")).toBeInTheDocument();
+	});
+
+	it("renders the feedback button with aria-label", () => {
+		renderHeader();
+		expect(screen.getByRole("button", { name: /feedback/i })).toBeInTheDocument();
+	});
+
+	it("feedback dialog is not visible by default", () => {
+		renderHeader();
+		expect(screen.queryByRole("dialog", { name: "feedback-dialog" })).not.toBeInTheDocument();
+	});
+
+	it("opens the feedback dialog when feedback button is clicked", async () => {
+		const user = userEvent.setup();
+		renderHeader();
+		await user.click(screen.getByRole("button", { name: /feedback/i }));
+		expect(screen.getByRole("dialog", { name: "feedback-dialog" })).toBeInTheDocument();
+	});
+
+	it("closes the feedback dialog when dialog signals close", async () => {
+		const user = userEvent.setup();
+		renderHeader();
+		await user.click(screen.getByRole("button", { name: /feedback/i }));
+		expect(screen.getByRole("dialog", { name: "feedback-dialog" })).toBeInTheDocument();
+		await user.click(screen.getByRole("button", { name: /close/i }));
+		expect(screen.queryByRole("dialog", { name: "feedback-dialog" })).not.toBeInTheDocument();
 	});
 });

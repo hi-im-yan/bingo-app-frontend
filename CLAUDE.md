@@ -56,6 +56,6 @@ Project-level hooks in `.claude/hooks/` — wired in `.claude/settings.json`.
 Do NOT run test/lint commands manually — hooks handle it.
 
 ## Git & Team
-Branch: `v2` (feature branch off `main`). Conventional commits.
+Branch from `develop`, PR to `develop`, merge to `main` for release. Conventional commits.
 Team: **Frontend Pipeline** — see `~/.claude/references/team-profiles.md`.
 Task management: `.tasks/` system — see `~/.claude/references/task-system.md`.
