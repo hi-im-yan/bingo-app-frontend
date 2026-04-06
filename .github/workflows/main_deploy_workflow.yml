@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -36,3 +38,52 @@ jobs:
             NEXT_PUBLIC_WS_URL=${{ vars.NEXT_PUBLIC_WS_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Get changelog
+        id: changelog
+        run: |
+          PREV_SHA=$(git log --format="%H" -n 2 | tail -1)
+          LOG=$(git log --pretty=format:"- %s (%h)" $PREV_SHA..HEAD)
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          echo "$LOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Open deploy PR on vps-infra
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          BRANCH="deploy/bingo-frontend-${{ github.run_number }}"
+          IMAGE_TAG="${{ github.run_number }}"
+          REPO="hi-im-yan/vps-infra"
+
+          gh repo clone "$REPO" /tmp/vps-infra
+          cd /tmp/vps-infra
+
+          git checkout -b "$BRANCH"
+
+          sed -i "s|bingoapp-frontend:[^ ]*|bingoapp-frontend:${IMAGE_TAG}|" docker-compose.yml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docker-compose.yml
+          git commit -m "deploy: bump bingo-frontend to build #${IMAGE_TAG}"
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --repo "$REPO" \
+            --base main \
+            --head "$BRANCH" \
+            --title "deploy: bingo-frontend #${IMAGE_TAG}" \
+            --body "$(cat <<EOF
+          ## Bingo Frontend — Build #${IMAGE_TAG}
+
+          ### Changes
+          ${{ steps.changelog.outputs.log }}
+
+          ### Image
+          \`${{ secrets.DOCKER_HUB_REPOSITORY }}/bingoapp-frontend:${IMAGE_TAG}\`
+
+          ---
+          Merge this PR to deploy to VPS.
+          EOF
+          )"
