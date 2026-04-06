@@ -8,9 +8,9 @@
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 001 | Types, API function, i18n translations | ready | — | — |
-| 002 | FeedbackDialog component + tests | blocked | 001 | — |
-| 003 | Wire feedback button into AppHeader | blocked | 002 | — |
+| 001 | Types, API function, i18n translations | done | — | — |
+| 002 | FeedbackDialog component + tests | done | — | — |
+| 003 | Wire feedback button into AppHeader | ready | — | — |
 
 ## Decisions
 - Button in AppHeader right section: icon-only on mobile (MessageSquarePlus), icon + "Feedback" label on sm+ screens
