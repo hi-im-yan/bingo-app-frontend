@@ -7,7 +7,11 @@ on:
 
 jobs:
   build_and_push:
+    name: Build & Push Image
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ github.run_number }}
+      changelog: ${{ steps.changelog.outputs.log }}
 
     steps:
       - name: Checkout Repository
@@ -48,15 +52,21 @@ jobs:
           echo "$LOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
+  open_deploy_pr:
+    name: Open Deploy PR
+    needs: build_and_push
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Open deploy PR on vps-infra
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          BRANCH="deploy/bingo-frontend-${{ github.run_number }}"
-          IMAGE_TAG="${{ github.run_number }}"
+          BRANCH="deploy/bingo-frontend-${{ needs.build_and_push.outputs.image_tag }}"
+          IMAGE_TAG="${{ needs.build_and_push.outputs.image_tag }}"
           REPO="hi-im-yan/vps-infra"
 
-          gh repo clone "$REPO" /tmp/vps-infra
+          git clone https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git /tmp/vps-infra
           cd /tmp/vps-infra
 
           git checkout -b "$BRANCH"
@@ -78,7 +88,7 @@ jobs:
           ## Bingo Frontend — Build #${IMAGE_TAG}
 
           ### Changes
-          ${{ steps.changelog.outputs.log }}
+          ${{ needs.build_and_push.outputs.changelog }}
 
           ### Image
           \`${{ secrets.DOCKER_HUB_REPOSITORY }}/bingoapp-frontend:${IMAGE_TAG}\`
