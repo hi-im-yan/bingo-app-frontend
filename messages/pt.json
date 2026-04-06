@@ -128,6 +128,23 @@
 		"alreadyDrawn": "Já sorteado",
 		"tapToDraw": "Toque para sortear"
 	},
+	"feedback": {
+		"button": "Feedback",
+		"title": "Enviar Feedback",
+		"description": "Ajude-nos a melhorar a experiência",
+		"nameLabel": "Seu nome",
+		"namePlaceholder": "Digite seu nome",
+		"contentLabel": "Mensagem",
+		"contentPlaceholder": "Conte-nos o que você acha...",
+		"emailLabel": "E-mail (opcional)",
+		"emailPlaceholder": "seu@email.com",
+		"phoneLabel": "Telefone (opcional)",
+		"phonePlaceholder": "Seu número de telefone",
+		"submit": "Enviar",
+		"submitting": "Enviando...",
+		"success": "Obrigado pelo seu feedback!",
+		"error": "Falha ao enviar feedback. Tente novamente."
+	},
 	"errors": {
 		"connectionLost": "Conexão perdida",
 		"reconnecting": "Reconectando...",

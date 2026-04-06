@@ -94,3 +94,19 @@ export interface TiebreakDrawForm {
 	"creator-hash": string;
 	slot: number;
 }
+
+export interface FeedbackForm {
+	name: string;
+	email?: string;
+	phone?: string;
+	content: string;
+}
+
+export interface FeedbackMessageDTO {
+	id: number;
+	name: string;
+	email?: string;
+	phone?: string;
+	content: string;
+	createdAt: string;
+}
