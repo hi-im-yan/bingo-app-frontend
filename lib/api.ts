@@ -1,4 +1,4 @@
-import type { RoomDTO, CreateRoomForm, ErrorResponse, FieldError, PlayerDTO } from "@/lib/types";
+import type { RoomDTO, CreateRoomForm, ErrorResponse, FieldError, PlayerDTO, FeedbackForm, FeedbackMessageDTO } from "@/lib/types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
@@ -114,12 +114,20 @@ function getQrCodeUrl(sessionCode: string): string {
 	return `${BASE_URL}/api/v1/room/${sessionCode}/qrcode`;
 }
 
+async function submitFeedback(form: FeedbackForm): Promise<FeedbackMessageDTO> {
+	return request<FeedbackMessageDTO>("/api/v1/feedback", {
+		method: "POST",
+		body: JSON.stringify(form),
+	});
+}
+
 export const api = {
 	createRoom,
 	getRoom,
 	deleteRoom,
 	getQrCodeUrl,
 	getPlayers,
+	submitFeedback,
 };
 
 export {
