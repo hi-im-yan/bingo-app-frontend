@@ -27,6 +27,17 @@
 			"intro": "Organize um jogo de bingo para seu grupo. Crie uma sala para sortear números e compartilhe com os jogadores, ou entre em uma sala existente com o código do anfitrião.",
 			"createHint": "Você será o anfitrião — escolha ou sorteie números e compartilhe o código da sala com seus jogadores.",
 			"joinHint": "Digite o código de 6 caracteres que seu anfitrião compartilhou com você."
+		},
+		"myRooms": {
+			"title": "Minhas Salas",
+			"enterAsGm": "Entrar como GM",
+			"delete": "Excluir",
+			"deleteConfirmTitle": "Excluir esta sala?",
+			"deleteConfirmDescription": "Isso exclui permanentemente a sala para todos.",
+			"confirm": "Excluir",
+			"cancel": "Cancelar",
+			"loading": "Carregando...",
+			"empty": "Nenhuma sala ainda"
 		}
 	},
 	"createRoom": {

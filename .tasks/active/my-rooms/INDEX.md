@@ -13,8 +13,8 @@ Mobile: button opens a Dialog.
 
 | ID | Task | Status | Blocked By | Assignee |
 |----|------|--------|------------|----------|
-| 01 | Add `lookupRooms` + `getStoredCreatorHashes` to `lib/api.ts` | ready | — | — |
-| 02 | `useMyRooms` hook | ready | 01 | — |
+| 01 | Add `lookupRooms` + `getStoredCreatorHashes` to `lib/api.ts` | done | — | sonnet |
+| 02 | `useMyRooms` hook | done | 01 | sonnet |
 | 03 | `MyRoomsList` component with delete confirm | ready | 02 | — |
 | 04 | `MyRoomsPanel` (desktop) + `MyRoomsMobile` (dialog) wrappers | ready | 03 | — |
 | 05 | Wire into `app/[locale]/page.tsx` + i18n keys | ready | 04 | — |
