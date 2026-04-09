@@ -108,11 +108,9 @@ jobs:
           PR_URL: ${{ steps.create_pr.outputs.pr_url }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
+          description=$(printf '### Changes\n%s\n\n[View PR](%s)' "$CHANGELOG" "$PR_URL")
           payload=$(jq -n \
             --arg title "🚀 Bingo Frontend #${IMAGE_TAG} ready to deploy" \
-            --arg description "### Changes
-${CHANGELOG}
-
-[View PR](${PR_URL})" \
+            --arg description "$description" \
             '{embeds: [{title: $title, description: $description, color: 5814783}]}')
           curl -H "Content-Type: application/json" -d "$payload" "$DISCORD_WEBHOOK_URL"
