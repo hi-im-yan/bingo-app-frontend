@@ -11,7 +11,7 @@ export function MyRoomsPanel() {
 	if (!loading && rooms.length === 0 && !error) return null;
 
 	return (
-		<aside className="hidden lg:block w-80 rounded-lg border border-border bg-card p-4">
+		<aside className="hidden lg:block w-96 xl:w-[28rem] rounded-lg border border-border bg-card p-4">
 			<h2 className="mb-3 text-lg font-semibold">{t("title")}</h2>
 			<MyRoomsList rooms={rooms} loading={loading} error={error} onDelete={removeRoom} />
 		</aside>
