@@ -3,6 +3,7 @@ import {
 	api,
 	BingoApiError,
 	getCreatorHash,
+	getStoredCreatorHashes,
 	saveCreatorHash,
 	removeCreatorHash,
 	BASE_URL,
@@ -172,5 +173,124 @@ describe("BingoApiError", () => {
 		expect(error.status).toBe(404);
 		expect(error.message).toBe("Not found");
 		expect(error).toBeInstanceOf(Error);
+	});
+});
+
+describe("getStoredCreatorHashes", () => {
+	beforeEach(() => {
+		localStorage.clear();
+	});
+
+	it("returns [] when localStorage is empty", () => {
+		expect(getStoredCreatorHashes()).toEqual([]);
+	});
+
+	it("returns all stored creator hashes", () => {
+		saveCreatorHash("ROOM01", "hash-one");
+		saveCreatorHash("ROOM02", "hash-two");
+
+		const result = getStoredCreatorHashes();
+		expect(result).toHaveLength(2);
+		expect(result).toEqual(
+			expect.arrayContaining([
+				{ sessionCode: "ROOM01", hash: "hash-one" },
+				{ sessionCode: "ROOM02", hash: "hash-two" },
+			]),
+		);
+	});
+
+	it("ignores keys not prefixed with creator-hash:", () => {
+		localStorage.setItem("some-other-key", "some-value");
+		saveCreatorHash("ROOM01", "hash-one");
+
+		const result = getStoredCreatorHashes();
+		expect(result).toHaveLength(1);
+		expect(result[0]).toEqual({ sessionCode: "ROOM01", hash: "hash-one" });
+	});
+});
+
+describe("api.lookupRooms", () => {
+	beforeEach(() => {
+		localStorage.clear();
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
+	it("returns [] immediately without fetching when no hashes are stored", async () => {
+		const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+		const result = await api.lookupRooms();
+
+		expect(result).toEqual([]);
+		expect(fetchSpy).not.toHaveBeenCalled();
+	});
+
+	it("posts creatorHashes and returns parsed RoomDTO[]", async () => {
+		saveCreatorHash("A3X9K2", mockRoom.creatorHash!);
+
+		vi.spyOn(globalThis, "fetch").mockResolvedValue(
+			new Response(JSON.stringify([mockRoom]), {
+				status: 200,
+				headers: { "Content-Type": "application/json" },
+			}),
+		);
+
+		const result = await api.lookupRooms();
+
+		expect(result).toEqual([mockRoom]);
+		expect(fetch).toHaveBeenCalledWith(
+			`${BASE_URL}/api/v1/room/lookup`,
+			expect.objectContaining({
+				method: "POST",
+				body: JSON.stringify({ creatorHashes: [mockRoom.creatorHash] }),
+			}),
+		);
+	});
+
+	it("prunes stored hashes not present in the response", async () => {
+		saveCreatorHash("A3X9K2", mockRoom.creatorHash!);
+		saveCreatorHash("STALE1", "stale-hash-999");
+
+		vi.spyOn(globalThis, "fetch").mockResolvedValue(
+			new Response(JSON.stringify([mockRoom]), {
+				status: 200,
+				headers: { "Content-Type": "application/json" },
+			}),
+		);
+
+		await api.lookupRooms();
+
+		// Alive room stays
+		expect(getCreatorHash("A3X9K2")).toBe(mockRoom.creatorHash);
+		// Stale room is pruned
+		expect(getCreatorHash("STALE1")).toBeNull();
+	});
+
+	it("does not prune when all hashes come back", async () => {
+		const roomTwo: RoomDTO = {
+			name: "Room Two",
+			sessionCode: "B4Y8L3",
+			creatorHash: "another-hash-value",
+			drawnNumbers: [],
+			drawnLabels: [],
+			drawMode: "AUTOMATIC",
+		};
+
+		saveCreatorHash("A3X9K2", mockRoom.creatorHash!);
+		saveCreatorHash("B4Y8L3", roomTwo.creatorHash!);
+
+		vi.spyOn(globalThis, "fetch").mockResolvedValue(
+			new Response(JSON.stringify([mockRoom, roomTwo]), {
+				status: 200,
+				headers: { "Content-Type": "application/json" },
+			}),
+		);
+
+		await api.lookupRooms();
+
+		expect(getCreatorHash("A3X9K2")).toBe(mockRoom.creatorHash);
+		expect(getCreatorHash("B4Y8L3")).toBe(roomTwo.creatorHash);
 	});
 });
