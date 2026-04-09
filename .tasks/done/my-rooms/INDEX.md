@@ -15,9 +15,9 @@ Mobile: button opens a Dialog.
 |----|------|--------|------------|----------|
 | 01 | Add `lookupRooms` + `getStoredCreatorHashes` to `lib/api.ts` | done | — | sonnet |
 | 02 | `useMyRooms` hook | done | 01 | sonnet |
-| 03 | `MyRoomsList` component with delete confirm | ready | 02 | — |
-| 04 | `MyRoomsPanel` (desktop) + `MyRoomsMobile` (dialog) wrappers | ready | 03 | — |
-| 05 | Wire into `app/[locale]/page.tsx` + i18n keys | ready | 04 | — |
+| 03 | `MyRoomsList` component with delete confirm | done | 02 | sonnet |
+| 04 | `MyRoomsPanel` (desktop) + `MyRoomsMobile` (dialog) wrappers | done | 03 | sonnet |
+| 05 | Wire into `app/[locale]/page.tsx` + i18n keys | done | 04 | sonnet |
 
 ## Decisions
 - Lookup runs client-side on mount; no SSR (hashes live in localStorage).
