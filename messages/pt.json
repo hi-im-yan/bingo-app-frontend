@@ -151,6 +151,7 @@
 		"emailPlaceholder": "seu@email.com",
 		"phoneLabel": "Telefone (opcional)",
 		"phonePlaceholder": "Seu número de telefone",
+		"invalidPhone": "Por favor, insira um número de telefone válido",
 		"submit": "Enviar",
 		"submitting": "Enviando...",
 		"success": "Obrigado pelo seu feedback!",

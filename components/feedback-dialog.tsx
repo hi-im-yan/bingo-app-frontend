@@ -25,11 +25,22 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 
+// Allows digits, spaces, +, -, (), and dots. Must contain at least 7 digits.
+const phoneRegex = /^[+]?[\d\s().-]{7,20}$/;
+
 const feedbackSchema = z.object({
 	name: z.string().min(1).max(100),
 	content: z.string().min(1).max(2000),
 	email: z.string().email().max(254).optional().or(z.literal("")),
-	phone: z.string().max(20).optional().or(z.literal("")),
+	phone: z
+		.string()
+		.max(20)
+		.refine(
+			(val) => val === "" || (phoneRegex.test(val) && (val.match(/\d/g)?.length ?? 0) >= 7),
+			{ message: "invalidPhone" },
+		)
+		.optional()
+		.or(z.literal("")),
 });
 
 type FeedbackValues = z.infer<typeof feedbackSchema>;
@@ -138,7 +149,7 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
 						<FormField
 							control={form.control}
 							name="phone"
-							render={({ field }) => (
+							render={({ field, fieldState }) => (
 								<FormItem>
 									<FormLabel>{t("phoneLabel")}</FormLabel>
 									<FormControl>
@@ -149,7 +160,9 @@ export function FeedbackDialog({ open, onOpenChange }: FeedbackDialogProps) {
 											{...field}
 										/>
 									</FormControl>
-									<FormMessage />
+									{fieldState.error ? (
+										<p className="text-destructive text-sm">{t("invalidPhone")}</p>
+									) : null}
 								</FormItem>
 							)}
 						/>
