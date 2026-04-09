@@ -1,4 +1,4 @@
-import type { RoomDTO, CreateRoomForm, ErrorResponse, FieldError, PlayerDTO, FeedbackForm, FeedbackMessageDTO } from "@/lib/types";
+import type { RoomDTO, CreateRoomForm, ErrorResponse, FieldError, PlayerDTO, FeedbackForm, FeedbackMessageDTO, RoomLookupForm } from "@/lib/types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
@@ -14,6 +14,20 @@ class BingoApiError extends Error {
 		this.code = code;
 		this.fields = fields;
 	}
+}
+
+function getStoredCreatorHashes(): { sessionCode: string; hash: string }[] {
+	if (typeof window === "undefined") return [];
+	const prefix = "creator-hash:";
+	const out: { sessionCode: string; hash: string }[] = [];
+	for (let i = 0; i < localStorage.length; i++) {
+		const key = localStorage.key(i);
+		if (key && key.startsWith(prefix)) {
+			const hash = localStorage.getItem(key);
+			if (hash) out.push({ sessionCode: key.slice(prefix.length), hash });
+		}
+	}
+	return out;
 }
 
 function getCreatorHash(sessionCode: string): string | null {
@@ -110,6 +124,27 @@ async function getPlayers(sessionCode: string): Promise<PlayerDTO[]> {
 	});
 }
 
+async function lookupRooms(): Promise<RoomDTO[]> {
+	const stored = getStoredCreatorHashes();
+	if (stored.length === 0) return [];
+
+	const body: RoomLookupForm = { creatorHashes: stored.map((s) => s.hash) };
+	const rooms = await request<RoomDTO[]>("/api/v1/room/lookup", {
+		method: "POST",
+		body: JSON.stringify(body),
+	});
+
+	// Prune any stored hash whose room didn't come back
+	const aliveHashes = new Set(rooms.map((r) => r.creatorHash).filter(Boolean) as string[]);
+	for (const { sessionCode, hash } of stored) {
+		if (!aliveHashes.has(hash)) {
+			removeCreatorHash(sessionCode);
+		}
+	}
+
+	return rooms;
+}
+
 function getQrCodeUrl(sessionCode: string): string {
 	return `${BASE_URL}/api/v1/room/${sessionCode}/qrcode`;
 }
@@ -128,11 +163,13 @@ export const api = {
 	getQrCodeUrl,
 	getPlayers,
 	submitFeedback,
+	lookupRooms,
 };
 
 export {
 	BingoApiError,
 	getCreatorHash,
+	getStoredCreatorHashes,
 	saveCreatorHash,
 	removeCreatorHash,
 	BASE_URL,
