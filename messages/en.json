@@ -27,6 +27,17 @@
 			"intro": "Host a bingo game for your group. Create a room to draw numbers and share with players, or join an existing room with a code from your host.",
 			"createHint": "You'll be the host — pick or draw numbers and share the room code with your players.",
 			"joinHint": "Enter the 6-character code your host shared with you."
+		},
+		"myRooms": {
+			"title": "My Rooms",
+			"enterAsGm": "Enter as GM",
+			"delete": "Delete",
+			"deleteConfirmTitle": "Delete this room?",
+			"deleteConfirmDescription": "This permanently deletes the room for everyone.",
+			"confirm": "Delete",
+			"cancel": "Cancel",
+			"loading": "Loading...",
+			"empty": "No rooms yet"
 		}
 	},
 	"createRoom": {

@@ -110,3 +110,7 @@ export interface FeedbackMessageDTO {
 	content: string;
 	createdAt: string;
 }
+
+export interface RoomLookupForm {
+	creatorHashes: string[];
+}
