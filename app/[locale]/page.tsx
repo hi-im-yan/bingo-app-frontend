@@ -11,7 +11,7 @@ export default function Home() {
 	const t = useTranslations("home");
 
 	return (
-		<div className="flex flex-col lg:flex-row lg:items-start lg:justify-center lg:gap-8">
+		<div className="mx-auto flex w-full max-w-5xl flex-col lg:flex-row lg:items-start lg:justify-center lg:gap-8">
 			<PageContainer className="justify-center gap-8">
 				<PageHeader>
 					<PageTitle className="text-4xl sm:text-5xl">{t("title")}</PageTitle>
