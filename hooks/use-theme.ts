@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "bingo-theme";
-const THEMES = ["default", "neon", "retro", "ember"] as const;
+const THEMES = ["default", "neon", "retro", "ember", "mint"] as const;
 type Theme = (typeof THEMES)[number];
 
 const listeners = new Set<() => void>();

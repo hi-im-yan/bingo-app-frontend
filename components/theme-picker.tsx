@@ -12,6 +12,7 @@ const THEME_COLORS: Record<Theme, string[]> = {
 	neon: ["#8C00FF", "#FF3F7F", "#FFC400"],
 	retro: ["#134686", "#ED3F27", "#FEB21A"],
 	ember: ["#9B0F06", "#D53E0E", "#EED9B9"],
+	mint: ["#637AB9", "#4FB7B3", "#A8FBD3"],
 };
 
 export function ThemePicker() {
