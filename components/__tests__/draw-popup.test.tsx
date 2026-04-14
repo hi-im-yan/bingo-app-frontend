@@ -48,21 +48,21 @@ describe("DrawPopup", () => {
 		expect(liveRegion).toHaveTextContent("Number drawn: B-7");
 	});
 
-	it("calls onDismiss after 2 seconds", () => {
+	it("calls onDismiss after 3.8 seconds", () => {
 		const onDismiss = vi.fn();
 		renderComponent(7, onDismiss);
 		expect(onDismiss).not.toHaveBeenCalled();
 		act(() => {
-			vi.advanceTimersByTime(2000);
+			vi.advanceTimersByTime(3800);
 		});
 		expect(onDismiss).toHaveBeenCalledTimes(1);
 	});
 
-	it("does not call onDismiss before 2 seconds", () => {
+	it("does not call onDismiss before 3.8 seconds", () => {
 		const onDismiss = vi.fn();
 		renderComponent(7, onDismiss);
 		act(() => {
-			vi.advanceTimersByTime(1999);
+			vi.advanceTimersByTime(3799);
 		});
 		expect(onDismiss).not.toHaveBeenCalled();
 	});
@@ -72,7 +72,7 @@ describe("DrawPopup", () => {
 		const { unmount } = renderComponent(7, onDismiss);
 		unmount();
 		act(() => {
-			vi.advanceTimersByTime(2000);
+			vi.advanceTimersByTime(3800);
 		});
 		expect(onDismiss).not.toHaveBeenCalled();
 	});

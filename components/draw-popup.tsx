@@ -19,14 +19,13 @@ export function DrawPopup({ number, onDismiss }: DrawPopupProps) {
 			return;
 		}
 
-		// At 700ms start fade-out animation, then call onDismiss at 1000ms
 		const fadeTimer = setTimeout(() => {
 			setDismissing(true);
-		}, 1700);
+		}, 3500);
 
 		const dismissTimer = setTimeout(() => {
 			onDismiss();
-		}, 2000);
+		}, 3800);
 
 		return () => {
 			clearTimeout(fadeTimer);
@@ -61,7 +60,7 @@ export function DrawPopup({ number, onDismiss }: DrawPopupProps) {
 				style={{
 					animation: dismissing
 						? "popup-fade-out 300ms ease-in forwards"
-						: "popup-drop-spin 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+						: "popup-drop-spin 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
 				}}
 			>
 				<div className="flex size-40 items-center justify-center rounded-full bg-ball-drawn shadow-2xl">
