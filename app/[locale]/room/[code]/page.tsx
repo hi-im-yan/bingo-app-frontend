@@ -100,6 +100,7 @@ export default function PlayerRoomPage() {
 		onReconnect: handleReconnect,
 		onCorrection: handleCorrection,
 		onTiebreakUpdate: handleTiebreakUpdate,
+		onRoomReset: () => toast.info(t("gameWasReset")),
 	});
 
 	const handlePlayerJoin = useCallback(
