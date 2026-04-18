@@ -114,3 +114,8 @@ export interface FeedbackMessageDTO {
 export interface RoomLookupForm {
 	creatorHashes: string[];
 }
+
+export interface UpdateRoomForm {
+	name?: string | null;
+	description?: string | null;
+}

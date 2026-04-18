@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import type { RoomDTO, AddNumberForm, DrawNumberForm, CorrectNumberForm, NumberCorrectionDTO, PlayerDTO, JoinRoomForm, TiebreakDTO, StartTiebreakForm, TiebreakDrawForm } from "@/lib/types";
 import { useStompClient, type WsErrorResponse } from "./use-stomp-client";
 
@@ -13,6 +13,7 @@ interface UseRoomSubscriptionOptions {
 	onCorrection?: (correction: NumberCorrectionDTO) => void;
 	onPlayerJoin?: (player: PlayerDTO) => void;
 	onTiebreakUpdate?: (tiebreak: TiebreakDTO) => void;
+	onRoomReset?: () => void;
 }
 
 interface UseRoomSubscriptionReturn {
@@ -36,8 +37,10 @@ export function useRoomSubscription({
 	onCorrection,
 	onPlayerJoin,
 	onTiebreakUpdate,
+	onRoomReset,
 }: UseRoomSubscriptionOptions): UseRoomSubscriptionReturn {
 	const [room, setRoom] = useState<RoomDTO | null>(initialRoom ?? null);
+	const prevDrawnCountRef = useRef<number>(initialRoom?.drawnNumbers.length ?? 0);
 
 	const { connected, reconnecting, subscribe, publish } = useStompClient({
 		onError,
@@ -51,6 +54,12 @@ export function useRoomSubscription({
 		const unsubscribe = subscribe(`/room/${sessionCode}`, (message) => {
 			try {
 				const updated: RoomDTO = JSON.parse(message.body);
+				const prevCount = prevDrawnCountRef.current;
+				const nextCount = updated.drawnNumbers.length;
+				if (prevCount > 0 && nextCount === 0) {
+					onRoomReset?.();
+				}
+				prevDrawnCountRef.current = nextCount;
 				setRoom(updated);
 			} catch {
 				onError?.("Failed to parse room update");
@@ -60,7 +69,7 @@ export function useRoomSubscription({
 		return () => {
 			unsubscribe?.();
 		};
-	}, [connected, sessionCode, subscribe, onError]);
+	}, [connected, sessionCode, subscribe, onError, onRoomReset]);
 
 	const addNumber = useCallback(
 		(creatorHash: string, number: number) => {

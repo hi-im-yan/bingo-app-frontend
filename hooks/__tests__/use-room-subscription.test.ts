@@ -392,4 +392,126 @@ describe("useRoomSubscription", () => {
 		expect(onError).toHaveBeenCalledWith("Failed to parse tiebreak update");
 		expect(onTiebreakUpdate).not.toHaveBeenCalled();
 	});
+
+	describe("onRoomReset callback", () => {
+		it("fires when drawnNumbers transitions from non-empty to empty", () => {
+			const onRoomReset = vi.fn();
+			let roomCallback: (msg: { body: string }) => void = () => {};
+
+			mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+				if (dest === "/room/ABC123") {
+					roomCallback = cb;
+				}
+				return vi.fn();
+			});
+
+			renderHook(() =>
+				useRoomSubscription({ sessionCode: "ABC123", onRoomReset }),
+			);
+
+			act(() => {
+				roomCallback({ body: JSON.stringify({ ...mockRoom, drawnNumbers: [5, 12], drawnLabels: ["B-5", "N-12"] }) });
+			});
+
+			act(() => {
+				roomCallback({ body: JSON.stringify({ ...mockRoom, drawnNumbers: [], drawnLabels: [] }) });
+			});
+
+			expect(onRoomReset).toHaveBeenCalledTimes(1);
+		});
+
+		it("does NOT fire when initial state is empty and next update is empty", () => {
+			const onRoomReset = vi.fn();
+			let roomCallback: (msg: { body: string }) => void = () => {};
+
+			mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+				if (dest === "/room/ABC123") {
+					roomCallback = cb;
+				}
+				return vi.fn();
+			});
+
+			renderHook(() =>
+				useRoomSubscription({ sessionCode: "ABC123", initialRoom: mockRoom, onRoomReset }),
+			);
+
+			act(() => {
+				roomCallback({ body: JSON.stringify({ ...mockRoom, drawnNumbers: [], drawnLabels: [] }) });
+			});
+
+			expect(onRoomReset).not.toHaveBeenCalled();
+		});
+
+		it("does NOT fire on non-empty → non-empty updates", () => {
+			const onRoomReset = vi.fn();
+			let roomCallback: (msg: { body: string }) => void = () => {};
+
+			mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+				if (dest === "/room/ABC123") {
+					roomCallback = cb;
+				}
+				return vi.fn();
+			});
+
+			renderHook(() =>
+				useRoomSubscription({ sessionCode: "ABC123", onRoomReset }),
+			);
+
+			act(() => {
+				roomCallback({ body: JSON.stringify({ ...mockRoom, drawnNumbers: [5], drawnLabels: ["B-5"] }) });
+			});
+
+			act(() => {
+				roomCallback({ body: JSON.stringify({ ...mockRoom, drawnNumbers: [5, 12], drawnLabels: ["B-5", "N-12"] }) });
+			});
+
+			expect(onRoomReset).not.toHaveBeenCalled();
+		});
+
+		it("does NOT fire on initial load even if drawnNumbers is empty", () => {
+			const onRoomReset = vi.fn();
+			let roomCallback: (msg: { body: string }) => void = () => {};
+
+			mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+				if (dest === "/room/ABC123") {
+					roomCallback = cb;
+				}
+				return vi.fn();
+			});
+
+			renderHook(() =>
+				useRoomSubscription({ sessionCode: "ABC123", onRoomReset }),
+			);
+
+			act(() => {
+				roomCallback({ body: JSON.stringify({ ...mockRoom, drawnNumbers: [], drawnLabels: [] }) });
+			});
+
+			expect(onRoomReset).not.toHaveBeenCalled();
+		});
+
+		it("is a no-op when callback is not provided", () => {
+			let roomCallback: (msg: { body: string }) => void = () => {};
+
+			mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+				if (dest === "/room/ABC123") {
+					roomCallback = cb;
+				}
+				return vi.fn();
+			});
+
+			renderHook(() =>
+				useRoomSubscription({ sessionCode: "ABC123" }),
+			);
+
+			expect(() => {
+				act(() => {
+					roomCallback({ body: JSON.stringify({ ...mockRoom, drawnNumbers: [5], drawnLabels: ["B-5"] }) });
+				});
+				act(() => {
+					roomCallback({ body: JSON.stringify({ ...mockRoom, drawnNumbers: [], drawnLabels: [] }) });
+				});
+			}).not.toThrow();
+		});
+	});
 });

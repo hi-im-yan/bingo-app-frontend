@@ -1,4 +1,4 @@
-import type { RoomDTO, CreateRoomForm, ErrorResponse, FieldError, PlayerDTO, FeedbackForm, FeedbackMessageDTO, RoomLookupForm } from "@/lib/types";
+import type { RoomDTO, CreateRoomForm, ErrorResponse, FieldError, PlayerDTO, FeedbackForm, FeedbackMessageDTO, RoomLookupForm, UpdateRoomForm } from "@/lib/types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
@@ -104,6 +104,31 @@ async function getRoom(sessionCode: string): Promise<RoomDTO> {
 	});
 }
 
+async function resetRoom(sessionCode: string): Promise<RoomDTO> {
+	const hash = getCreatorHash(sessionCode);
+	if (!hash) {
+		throw new BingoApiError(400, "No creator hash found for this room");
+	}
+
+	return request<RoomDTO>(`/api/v1/room/${sessionCode}/reset`, {
+		method: "POST",
+		sessionCode,
+	});
+}
+
+async function updateRoomInfo(sessionCode: string, form: UpdateRoomForm): Promise<RoomDTO> {
+	const hash = getCreatorHash(sessionCode);
+	if (!hash) {
+		throw new BingoApiError(400, "No creator hash found for this room");
+	}
+
+	return request<RoomDTO>(`/api/v1/room/${sessionCode}`, {
+		method: "PATCH",
+		body: JSON.stringify(form),
+		sessionCode,
+	});
+}
+
 async function deleteRoom(sessionCode: string): Promise<void> {
 	const hash = getCreatorHash(sessionCode);
 	if (!hash) {
@@ -159,6 +184,8 @@ async function submitFeedback(form: FeedbackForm): Promise<FeedbackMessageDTO> {
 export const api = {
 	createRoom,
 	getRoom,
+	resetRoom,
+	updateRoomInfo,
 	deleteRoom,
 	getQrCodeUrl,
 	getPlayers,
