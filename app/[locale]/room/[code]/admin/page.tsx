@@ -23,6 +23,7 @@ import { AutomaticDrawPanel } from "@/components/automatic-draw-panel";
 import { ShareRoomSection } from "@/components/share-room-section";
 import { PlayerList } from "@/components/player-list";
 import { DeleteRoomButton } from "@/components/delete-room-button";
+import { ResetRoomButton } from "@/components/reset-room-button";
 import { CorrectNumberDialog } from "@/components/correct-number-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AdminTiebreakPanel } from "@/components/admin-tiebreak-panel";
@@ -32,6 +33,7 @@ import { TOTAL_NUMBERS } from "@/lib/constants";
 export default function AdminPage() {
 	const params = useParams<{ code: string }>();
 	const t = useTranslations("admin");
+	const tRoom = useTranslations("room");
 	const tErrors = useTranslations("errors");
 	const [initialRoom, setInitialRoom] = useState<RoomDTO | null>(null);
 	const [players, setPlayers] = useState<PlayerDTO[]>([]);
@@ -140,6 +142,7 @@ export default function AdminPage() {
 		onCorrection: handleCorrection,
 		onPlayerJoin: handlePlayerJoin,
 		onTiebreakUpdate: handleTiebreakUpdate,
+		onRoomReset: () => toast.info(tRoom("gameWasReset")),
 	});
 
 	const displayRoom = room ?? initialRoom;
@@ -312,10 +315,11 @@ export default function AdminPage() {
 					</HelpText>
 					<ShareRoomSection sessionCode={displayRoom.sessionCode} />
 					<PlayerList players={players} loading={playersLoading} />
+					<ResetRoomButton sessionCode={displayRoom.sessionCode} />
 				</div>
 			</div>
 
-			<div className="mt-6">
+			<div className="mt-6 flex justify-end">
 				<DeleteRoomButton sessionCode={displayRoom.sessionCode} />
 			</div>
 		</PageContainer>
