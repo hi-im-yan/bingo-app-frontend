@@ -20,6 +20,7 @@ import { DrawPopup } from "@/components/draw-popup";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HelpText } from "@/components/help-text";
 import { TiebreakOverlay } from "@/components/tiebreak-overlay";
+import { ShareRoomSection } from "@/components/share-room-section";
 import { useHelpVisible } from "@/hooks/use-help-visible";
 
 export default function PlayerRoomPage() {
@@ -216,6 +217,8 @@ export default function PlayerRoomPage() {
 				<LastDrawnNumbers drawnNumbers={displayRoom.drawnNumbers} />
 				<DrawnNumbersBoard drawnNumbers={displayRoom.drawnNumbers} />
 			</div>
+
+			<ShareRoomSection sessionCode={displayRoom.sessionCode} />
 		</PageContainer>
 	);
 }

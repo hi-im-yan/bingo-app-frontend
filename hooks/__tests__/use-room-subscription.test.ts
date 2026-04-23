@@ -513,5 +513,70 @@ describe("useRoomSubscription", () => {
 				});
 			}).not.toThrow();
 		});
+
+		it("fires on reset when player joined mid-game", () => {
+			// Simulates a player who joins a room that already has drawnNumbers.
+			// initialRoom arrives asynchronously — the hook must sync prevDrawnCountRef
+			// so the reset broadcast (drawnNumbers → []) is not silently dropped.
+			const onRoomReset = vi.fn();
+			let roomCallback: (msg: { body: string }) => void = () => {};
+
+			mockSubscribe.mockImplementation((dest: string, cb: (msg: { body: string }) => void) => {
+				if (dest === "/room/ABC123") {
+					roomCallback = cb;
+				}
+				return vi.fn();
+			});
+
+			const midGameRoom: RoomDTO = {
+				...mockRoom,
+				drawnNumbers: [1, 2, 3],
+				drawnLabels: ["B-1", "B-2", "B-3"],
+			};
+
+			const { rerender } = renderHook(
+				({ room }: { room?: RoomDTO }) =>
+					useRoomSubscription({ sessionCode: "ABC123", initialRoom: room, onRoomReset }),
+				{ initialProps: { room: undefined } },
+			);
+
+			// Simulate async initialRoom arriving after first render
+			act(() => {
+				rerender({ room: midGameRoom });
+			});
+
+			// Now a reset broadcast arrives
+			act(() => {
+				roomCallback({ body: JSON.stringify({ ...mockRoom, drawnNumbers: [], drawnLabels: [] }) });
+			});
+
+			expect(onRoomReset).toHaveBeenCalledTimes(1);
+		});
+
+		it("does not re-subscribe when onRoomReset reference changes", () => {
+			// Verifies that passing a new inline arrow function each render does NOT
+			// tear down and re-create the WS subscription (issue 2 / mobile drop).
+			const roomSubscribeCalls = () =>
+				mockSubscribe.mock.calls.filter(([dest]: [string]) => dest === "/room/ABC123").length;
+
+			const callbackA = vi.fn();
+			const callbackB = vi.fn();
+
+			const { rerender } = renderHook(
+				({ cb }: { cb: () => void }) =>
+					useRoomSubscription({ sessionCode: "ABC123", onRoomReset: cb }),
+				{ initialProps: { cb: callbackA } },
+			);
+
+			const subscribeCountAfterMount = roomSubscribeCalls();
+
+			// Swap to a brand-new callback reference — like an inline arrow on every render
+			act(() => {
+				rerender({ cb: callbackB });
+			});
+
+			// Subscription count must not have increased — no teardown/re-subscribe
+			expect(roomSubscribeCalls()).toBe(subscribeCountAfterMount);
+		});
 	});
 });
