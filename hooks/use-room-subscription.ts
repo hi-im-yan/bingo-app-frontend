@@ -41,6 +41,26 @@ export function useRoomSubscription({
 }: UseRoomSubscriptionOptions): UseRoomSubscriptionReturn {
 	const [room, setRoom] = useState<RoomDTO | null>(initialRoom ?? null);
 	const prevDrawnCountRef = useRef<number>(initialRoom?.drawnNumbers.length ?? 0);
+	const initialRoomSyncedRef = useRef(false);
+
+	// Keep a stable ref to onRoomReset so the subscribe effect doesn't need it
+	// in its dependency array — prevents unnecessary subscription teardown/re-subscribe
+	// on every render when the caller passes an inline arrow function.
+	const onRoomResetRef = useRef(onRoomReset);
+	useEffect(() => {
+		onRoomResetRef.current = onRoomReset;
+	});
+
+	// Sync prevDrawnCountRef from initialRoom on its first arrival.
+	// useRef ignores initialRoom changes after mount, so a player who joined
+	// mid-game (initialRoom arrives asynchronously) would otherwise start with
+	// prevCount=0, causing the reset broadcast to be silently dropped.
+	useEffect(() => {
+		if (!initialRoomSyncedRef.current && initialRoom) {
+			prevDrawnCountRef.current = initialRoom.drawnNumbers.length;
+			initialRoomSyncedRef.current = true;
+		}
+	}, [initialRoom]);
 
 	const { connected, reconnecting, subscribe, publish } = useStompClient({
 		onError,
@@ -57,7 +77,7 @@ export function useRoomSubscription({
 				const prevCount = prevDrawnCountRef.current;
 				const nextCount = updated.drawnNumbers.length;
 				if (prevCount > 0 && nextCount === 0) {
-					onRoomReset?.();
+					onRoomResetRef.current?.();
 				}
 				prevDrawnCountRef.current = nextCount;
 				setRoom(updated);
@@ -69,7 +89,7 @@ export function useRoomSubscription({
 		return () => {
 			unsubscribe?.();
 		};
-	}, [connected, sessionCode, subscribe, onError, onRoomReset]);
+	}, [connected, sessionCode, subscribe, onError]);
 
 	const addNumber = useCallback(
 		(creatorHash: string, number: number) => {
