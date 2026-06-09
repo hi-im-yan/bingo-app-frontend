@@ -170,4 +170,15 @@ describe("AdminPage", () => {
 			expect(screen.getByText("All numbers have been drawn!")).toBeInTheDocument();
 		});
 	});
+
+	it("renders tiebreak panel in manual mode", async () => {
+		mockGetCreatorHash.mockReturnValue("hash123");
+		mockGetRoom.mockImplementation(() => Promise.resolve(makeRoom({ drawMode: "MANUAL" })));
+		renderAdmin();
+		await waitFor(() => {
+			expect(screen.getByText("Test Room")).toBeInTheDocument();
+		});
+		expect(screen.getByText("Tiebreaker")).toBeInTheDocument();
+		expect(screen.getByRole("button", { name: "Start Tiebreaker" })).toBeInTheDocument();
+	});
 });

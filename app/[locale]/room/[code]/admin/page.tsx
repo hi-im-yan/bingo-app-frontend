@@ -297,13 +297,13 @@ export default function AdminPage() {
 								allDrawn={allDrawn}
 								onDraw={handleDrawNumber}
 							/>
-							<AdminTiebreakPanel
-								tiebreak={tiebreak}
-								onStart={handleStartTiebreak}
-								onDrawSlot={handleTiebreakDraw}
-							/>
 						</>
 					)}
+					<AdminTiebreakPanel
+						tiebreak={tiebreak}
+						onStart={handleStartTiebreak}
+						onDrawSlot={handleTiebreakDraw}
+					/>
 
 					<DrawnNumbersBoard drawnNumbers={displayRoom.drawnNumbers} />
 				</div>
